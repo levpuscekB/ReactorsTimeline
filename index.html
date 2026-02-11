@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RRDB Timeline Map</title>
+  <title>RRDB Reactors Timeline Map</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -96,6 +96,20 @@
       backdrop-filter: blur(6px);
     }
     #crit-chart svg text { fill: #111; }
+    #status-chart {
+      position: absolute;
+      top: 20px;      /* distance from top of map */
+      right: 20px;    /* distance from right side */
+      width: 380px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      z-index: 2001;
+      pointer-events: auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+    }
+
   </style>
 </head>
 
@@ -104,7 +118,9 @@
   <div id="mapWrap">
     <div id="map"></div>
 
+    <div id="status-chart" class="overlay-panel"></div>
     <div id="crit-chart"></div>
+    
 
     <div id="legend">
       <div class="legend-item active" data-status="all">
@@ -122,6 +138,17 @@
       <div class="legend-item" data-status="shutdown">
         <span class="legend-dot" style="background:#ff3b30"></span> Shutdown / Decommissioned
       </div>
+    <div id="interp-toggle" class="overlay-panel">
+      <label style="display:flex; gap:8px; align-items:center;">
+        <input type="checkbox" id="useInterpolated">
+        Use interpolated dates
+      </label>
+      <div id="interp-warning" style="display:none; margin-top:6px; color:#c00; font-size:12px; font-weight:600;">
+        Warning: dates are interpolated in this mode and may not represent the real situation.
+      </div>
+    </div>
+
+    
     </div>
   </div>
 
@@ -158,6 +185,10 @@ let GEO = new Map();      // cityKey -> {lat, lon}
 let MARKERS = new Map();  // iaea_code -> Leaflet marker
 let PLAY_TIMER = null;
 let STATUS_FILTER = "all";
+
+let REACTORS_RAW = [];
+let REACTORS_FILLED = [];
+let USE_INTERPOLATED = false;
 
 // ----------------------------
 // Colors + status mapping
@@ -378,6 +409,121 @@ function scheduleRelayout() {
 map.on("zoomend moveend", scheduleRelayout);
 
 // ----------------------------
+// Status counts chart (construction/operational/extended/shutdown)
+// ----------------------------
+let STATUS_SERIES = null;
+let stSvg, stG, stX, stY;
+let stLines = {};           // {construction:path, operational:path, extended:path, shutdown:path}
+let stLegendG, stYearLine;
+
+function buildStatusSeries(minYear, maxYear) {
+  const series = [];
+  for (let y = minYear; y <= maxYear; y++) {
+    let construction = 0, operational = 0, extended = 0, shutdown = 0;
+
+    for (const r of REACTORS) {
+      const st = reactorStateAtYear(r, y);
+      if (st === "construction") construction++;
+      else if (st === "operational") operational++;
+      else if (st === "extended") extended++;
+      else if (st === "shutdown") shutdown++;
+    }
+
+    series.push({ year: y, construction, operational, extended, shutdown });
+  }
+  return series;
+}
+
+function initStatusCountsChart() {
+  const el = document.getElementById("status-chart");
+  if (!el) return;
+  el.innerHTML = "";
+
+  const W = 360, H = 220;
+  const M = { top: 18, right: 16, bottom: 28, left: 46 };
+  const iw = W - M.left - M.right;
+  const ih = H - M.top - M.bottom;
+
+  STATUS_SERIES = buildStatusSeries(MIN_YEAR, FINAL_YEAR);
+
+  stSvg = d3.select(el).append("svg").attr("width", W).attr("height", H);
+  stG = stSvg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+  stX = d3.scaleLinear().domain([MIN_YEAR, FINAL_YEAR]).range([0, iw]);
+
+  const ymax = d3.max(STATUS_SERIES, d =>
+    Math.max(d.construction, d.operational, d.extended, d.shutdown)
+  ) || 1;
+
+  stY = d3.scaleLinear().domain([0, ymax]).nice().range([ih, 0]);
+
+  stG.append("g")
+    .attr("transform", `translate(0,${ih})`)
+    .call(d3.axisBottom(stX).ticks(6).tickFormat(d3.format("d")));
+
+  stG.append("g")
+    .call(d3.axisLeft(stY).ticks(5));
+
+  // Title (optional)
+  stSvg.append("text")
+    .attr("x", 10).attr("y", 14)
+    .attr("font-size", 12).attr("font-weight", 600)
+    .text("Reactor status over time");
+
+  // Line generator
+  const line = (key) => d3.line()
+    .x(d => stX(d.year))
+    .y(d => stY(d[key]));
+
+  // Create 4 line paths
+  stLines.construction = stG.append("path").attr("fill", "none").attr("stroke", COLORS.construction).attr("stroke-width", 2);
+  stLines.operational  = stG.append("path").attr("fill", "none").attr("stroke", COLORS.operational).attr("stroke-width", 2);
+  stLines.extended     = stG.append("path").attr("fill", "none").attr("stroke", COLORS.extended).attr("stroke-width", 2);
+  stLines.shutdown     = stG.append("path").attr("fill", "none").attr("stroke", COLORS.shutdown).attr("stroke-width", 2);
+
+  // Legend (simple, top-right inside chart)
+  stLegendG = stSvg.append("g").attr("transform", `translate(${W - 150},${18})`);
+  const items = [
+    ["construction", "Construction"],
+    ["operational", "Operational"],
+    ["extended", "Extended"],
+    ["shutdown", "Shutdown"],
+  ];
+  items.forEach(([k, label], i) => {
+    const g = stLegendG.append("g").attr("transform", `translate(0,${i*16})`);
+    g.append("line").attr("x1", 0).attr("x2", 14).attr("y1", 6).attr("y2", 6)
+      .attr("stroke", COLORS[k]).attr("stroke-width", 3);
+    g.append("text").attr("x", 18).attr("y", 10).attr("font-size", 11).text(label);
+  });
+
+  // Vertical year indicator
+  stYearLine = stG.append("line")
+    .attr("y1", 0).attr("y2", ih)
+    .attr("stroke", "#111")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+}
+
+function updateStatusCountsChartToYear(year) {
+  if (!STATUS_SERIES) return;
+
+  const data = STATUS_SERIES.filter(d => d.year <= year);
+
+  const line = (key) => d3.line()
+    .x(d => stX(d.year))
+    .y(d => stY(d[key]));
+
+  stLines.construction.datum(data).attr("d", line("construction"));
+  stLines.operational .datum(data).attr("d", line("operational"));
+  stLines.extended    .datum(data).attr("d", line("extended"));
+  stLines.shutdown    .datum(data).attr("d", line("shutdown"));
+
+  stYearLine.attr("x1", stX(year)).attr("x2", stX(year));
+}
+
+
+
+// ----------------------------
 // Criticality chart (D3) — integral + differential
 // ----------------------------
 let MIN_YEAR = 1950;
@@ -581,6 +727,7 @@ function renderYear(year, opts = {}) {
       marker.setPopupContent(makePopup(r, state, year));
     }
   }
+  updateStatusCountsChartToYear(year);
 
   updateCriticalityChartToYear(year);
 }
@@ -657,9 +804,39 @@ function computeMinYearFromDates(reactors) {
 
 (async function boot() {
   try {
-    dataStatus.textContent = "loading reactors.json…";
-    REACTORS = await loadJson(DATA_URL);
+    dataStatus.textContent = "loading reactors…";
+
+    REACTORS_RAW = await loadJson("reactors.json");
+    REACTORS_FILLED = await loadJson("reactors_filled.json");
+
+    // start in non-interpolated mode
+    REACTORS = REACTORS_RAW;
     dataStatus.textContent = `${REACTORS.length} reactors loaded`;
+    const useInterpolatedEl = document.getElementById("useInterpolated");
+    const interpWarningEl = document.getElementById("interp-warning");
+
+    useInterpolatedEl.addEventListener("change", () => {
+      USE_INTERPOLATED = useInterpolatedEl.checked;
+      
+      REACTORS = USE_INTERPOLATED ? REACTORS_FILLED : REACTORS_RAW;
+      interpWarningEl.style.display = USE_INTERPOLATED ? "block" : "none";
+      
+      // recompute derived stuff that depends on REACTORS
+      MIN_YEAR = computeMinYearFromDates(REACTORS);
+      yearSlider.min = String(MIN_YEAR);
+      
+      // keep current year but clamp to new min/max
+      const y = Math.max(MIN_YEAR, Math.min(FINAL_YEAR, Number(yearSlider.value)));
+      yearSlider.value = String(y);
+      yearLabel.textContent = yearSlider.value;
+      
+      initCriticalityChart();
+      initStatusCountsChart();
+      updateStatusCountsChartToYear(Number(yearSlider.value));
+
+      renderYear(Number(yearSlider.value));
+    });
+
 
     MIN_YEAR = computeMinYearFromDates(REACTORS);
 
@@ -676,6 +853,9 @@ function computeMinYearFromDates(reactors) {
 
     // init chart AFTER data is loaded
     initCriticalityChart();
+    initStatusCountsChart();
+    updateStatusCountsChartToYear(Number(yearSlider.value));
+
     updateCriticalityChartToYear(Number(yearSlider.value));
 
     // initial render
@@ -688,4 +868,3 @@ function computeMinYearFromDates(reactors) {
 </script>
 </body>
 </html>
-
