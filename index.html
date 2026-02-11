@@ -9,20 +9,17 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- D3 (for collision layout + criticality chart) -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
-
   <style>
-
     html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
     #app { height: 100%; display: grid; grid-template-rows: 1fr auto; }
 
     #mapWrap { position: relative; }
-    #map { height: 100%; width: 100%; z-index: 1;}
+    #map { height: 100%; width: 100%; z-index: 1; }
 
-    /* Bottom panel */
+    /* Bottom controls */
     #controls {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -32,14 +29,12 @@
       background: #fff;
       align-items: center;
     }
-
     #timeline {
       display: grid;
       grid-template-columns: auto auto 1fr auto;
       gap: 10px;
       align-items: center;
     }
-
     button {
       border: 1px solid #ddd;
       background: #fafafa;
@@ -49,49 +44,58 @@
     }
     button:hover { background: #f2f2f2; }
     #yearLabel { font-variant-numeric: tabular-nums; font-weight: 600; width: 70px; text-align: right; }
-
     input[type="range"] { width: 100%; }
-
-    /* Chart panel bottom-right overlay */
-    #chartCard {
-      z-index: 1000;
-      pointer-events: auto;
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      width: 380px;
-      max-width: calc(100vw - 24px);
-      background: rgba(255,255,255,0.92);
-      border: 1px solid #e6e6e6;
-      border-radius: 16px;
-      padding: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      backdrop-filter: blur(6px);
-    }
-    #chartTitle { font-size: 13px; font-weight: 700; margin: 0 0 6px; }
-    #chartWrap { height: 190px; }
 
     /* Legend */
     #legend {
-      z-index: 1000;  
+      z-index: 2001;
       position: absolute;
       left: 12px;
       bottom: 12px;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.95);
       border: 1px solid #e6e6e6;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 10px 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
       backdrop-filter: blur(6px);
       font-size: 13px;
       line-height: 1.3;
+      pointer-events: auto;
+      user-select: none;
+      min-width: 220px;
     }
-    .swatch { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; border:1px solid rgba(0,0,0,0.15); }
-    .row { display:flex; align-items:center; margin: 3px 0; }
-    .muted { color:#666; font-size:12px; margin-top:6px; }
-    .leaflet-control-container {
-      z-index: 400;
+    .legend-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin: 4px 0;
+      opacity: 0.55;
     }
+    .legend-item.active { opacity: 1; font-weight: 650; }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    /* Criticality chart overlay */
+    #crit-chart {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 390px;
+      height: 250px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      z-index: 2001;
+      pointer-events: auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+    }
+    #crit-chart svg text { fill: #111; }
   </style>
 </head>
 
@@ -100,17 +104,24 @@
   <div id="mapWrap">
     <div id="map"></div>
 
-    <div id="legend">
-      <div class="row"><span class="swatch" style="background:#6ec6ff;"></span>Construction</div>
-      <div class="row"><span class="swatch" style="background:#34c759;"></span>Operational</div>
-      <div class="row"><span class="swatch" style="background:#ff9f0a;"></span>Extended/Temp shutdown</div>
-      <div class="row"><span class="swatch" style="background:#ff3b30;"></span>Shutdown/Decommissioned</div>
-      <div class="muted">Dots are offset within the same city so they don’t overlap.</div>
-    </div>
+    <div id="crit-chart"></div>
 
-    <div id="chartCard">
-      <p id="chartTitle">Reactor counts over time</p>
-      <div id="chartWrap"><canvas id="chart"></canvas></div>
+    <div id="legend">
+      <div class="legend-item active" data-status="all">
+        <span class="legend-dot" style="background:#666"></span> All
+      </div>
+      <div class="legend-item" data-status="construction">
+        <span class="legend-dot" style="background:#6ec6ff"></span> Under construction
+      </div>
+      <div class="legend-item" data-status="operational">
+        <span class="legend-dot" style="background:#34c759"></span> Operational
+      </div>
+      <div class="legend-item" data-status="extended">
+        <span class="legend-dot" style="background:#ff9f0a"></span> Extended shutdown
+      </div>
+      <div class="legend-item" data-status="shutdown">
+        <span class="legend-dot" style="background:#ff3b30"></span> Shutdown / Decommissioned
+      </div>
     </div>
   </div>
 
@@ -130,60 +141,33 @@
 
 <script>
 /**
- * ============================
- * 1) Load your data here
- * ============================
- * Option A: place `reactors.json` next to index.html and use fetch.
- * Option B: paste JSON into `REACTORS` below.
+ * Files expected next to index.html:
+ * - reactors.json
+ * - geocodes.json
  */
-const DATA_URL = "reactors.json"; // <-- put your exported file here
-const GEO_URL = "geocodes.json";
+const DATA_URL = "reactors.json";
+const GEO_URL  = "geocodes.json";
 
-let REACTORS = [];        // raw
+const FINAL_YEAR = 2026;
+
+// ----------------------------
+// State
+// ----------------------------
+let REACTORS = [];
 let GEO = new Map();      // cityKey -> {lat, lon}
 let MARKERS = new Map();  // iaea_code -> Leaflet marker
 let PLAY_TIMER = null;
+let STATUS_FILTER = "all";
 
+// ----------------------------
+// Colors + status mapping
+// ----------------------------
 const COLORS = {
-  construction: "#6ec6ff", // light blue
-  operational:  "#34c759", // green
-  extended:     "#ff9f0a", // orange
-  shutdown:     "#ff3b30"  // red
+  construction: "#6ec6ff",
+  operational:  "#34c759",
+  extended:     "#ff9f0a",
+  shutdown:     "#ff3b30"
 };
-
-// ----------------------------
-// 2) Date + status logic
-// ----------------------------
-function parseYearLoose(s) {
-  if (!s) return null;
-  const str = String(s).trim();
-  if (!str) return null;
-
-  // try YYYY
-  const m1 = str.match(/\b(19\d{2}|20\d{2})\b/);
-  if (m1) return Number(m1[1]);
-
-  // try DD.MM.YYYY or DD/MM/YYYY
-  const m2 = str.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
-  if (m2) {
-    let y = m2[3];
-    if (y.length === 2) y = "20" + y;
-    return Number(y);
-  }
-
-  // try YYYY-MM-DD
-  const m3 = str.match(/(19\d{2}|20\d{2})[./-]\d{1,2}[./-]\d{1,2}/);
-  if (m3) return Number(m3[1]);
-
-  return null;
-}
-
-function isExtendedShutdown(statusText) {
-  const s = (statusText || "").toUpperCase();
-  return s.includes("EXTENDED") || s.includes("TEMP") || s.includes("SHUTDOWN");
-}
-
-const FINAL_YEAR = 2026;
 
 const STATUS_SHUTDOWN_SET = new Set([
   "PERMANENT SHUTDOWN",
@@ -199,54 +183,139 @@ function isShutdownByStatus(r) {
   return STATUS_SHUTDOWN_SET.has(normStatus(r.status));
 }
 
+function isExtendedShutdown(statusText) {
+  const s = normStatus(statusText);
+  // (best-effort: adjust if you want)
+  return s.includes("EXTENDED") || s.includes("TEMPORARY") || s.includes("TEMP") || s === "EXTENDED SHUTDOWN";
+}
+
+// ----------------------------
+// Parsing helpers
+// ----------------------------
+function parseYearLoose(s) {
+  if (!s) return null;
+  const str = String(s).trim();
+  if (!str) return null;
+
+  const m1 = str.match(/\b(19\d{2}|20\d{2})\b/);
+  if (m1) return Number(m1[1]);
+
+  const m2 = str.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
+  if (m2) {
+    let y = m2[3];
+    if (y.length === 2) y = "20" + y;
+    return Number(y);
+  }
+
+  const m3 = str.match(/(19\d{2}|20\d{2})[./-]\d{1,2}[./-]\d{1,2}/);
+  if (m3) return Number(m3[1]);
+
+  return null;
+}
+
+function cityKey(r) {
+  const city = (r.location_closest_city || "").trim().toLowerCase();
+  const country = (r.country || "").trim().toLowerCase();
+  return `${city}|${country}`;
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function makePopup(r, state, year) {
+  return [
+    `<b>${escapeHtml(r.name || "")}</b>`,
+    `<div><code>${escapeHtml(r.iaea_code || "")}</code></div>`,
+    `<div>${escapeHtml(r.location_closest_city || "")}, ${escapeHtml(r.country || "")}</div>`,
+    `<div>Status@${year}: <b>${escapeHtml(state)}</b></div>`,
+    `<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">`,
+    `<div>Start construction: ${escapeHtml(r.start_of_construction || "")}</div>`,
+    `<div>First criticality: ${escapeHtml(r.first_criticality || "")}</div>`,
+    `<div>Temp shutdown: ${escapeHtml(r.tmp_shutdown_date || "")}</div>`,
+    `<div>Shutdown: ${escapeHtml(r.shutdown_date || "")}</div>`,
+  ].join("");
+}
+
+function markerStyleForState(state) {
+  const color = COLORS[state] || "#999";
+  return {
+    radius: 6,
+    color: "rgba(0,0,0,0.25)",
+    weight: 1,
+    fillColor: color,
+    fillOpacity: 0.95
+  };
+}
+
+// ----------------------------
+// Reactor state timeline logic
+// ----------------------------
 function reactorStateAtYear(r, year) {
-  // years (may be null)
-  // If shutdown date is missing but RRDB status says it IS shutdown/decom,
-  // mark it as shutdown only at the final snapshot year (2026).
-  if (year >= FINAL_YEAR && isShutdownByStatus(r)) return "shutdown";
   const yConstr = parseYearLoose(r.start_of_construction);
   const yCrit   = parseYearLoose(r.first_criticality);
   const yTmp    = parseYearLoose(r.tmp_shutdown_date);
   const yShut   = parseYearLoose(r.shutdown_date);
 
+  // If it has no "existence" by dates, don't show it at all.
   const existsByDates =
     (yConstr !== null && year >= yConstr) ||
     (yCrit   !== null && year >= yCrit);
-  
-  if (!existsByDates) return "none";
 
-  // If shutdown/decom date exists and we've passed it => shutdown
+  if (!existsByDates) {
+    // But: at final snapshot year, allow shutdown-by-status to appear IF reactor exists at all in dataset?
+    // You asked: only mark shutdown at 2026 when date missing.
+    // Still, we keep "not shown before construction/criticality".
+    return "none";
+  }
+
+  // Known shutdown date
   if (yShut !== null && year >= yShut) return "shutdown";
 
-  // Extended / temp shutdown: either date passed OR status says so (best effort)
+  // Unknown shutdown date but status says shutdown/decom -> treat as shutdown only at FINAL_YEAR snapshot
+  if (year >= FINAL_YEAR && isShutdownByStatus(r)) return "shutdown";
+
+  // Extended shutdown
   if ((yTmp !== null && year >= yTmp) || isExtendedShutdown(r.status)) {
-    // If they are operational later (rare), keep operational priority if crit date exists and is later than tmp
+    // prefer operational if it clearly has criticality and tmp is missing/stale
     if (yCrit !== null && year >= yCrit) {
-      // if tmp shutdown exists and is after crit, show extended; otherwise operational
-      if (yTmp !== null && yTmp > yCrit && year >= yTmp) return "extended";
-      // status string might be stale; prefer green if clearly operational by dates and not shut down
       if (yTmp === null) return "operational";
+      if (yTmp !== null && yTmp > yCrit && year >= yTmp) return "extended";
+      return "operational";
     }
-    // only mark extended if it has actually started by date OR status indicates it
     if (yTmp !== null && year >= yTmp) return "extended";
     if (isExtendedShutdown(r.status)) return "extended";
   }
 
-  // Operational: from first criticality
+  // Operational
   if (yCrit !== null && year >= yCrit) return "operational";
 
-  // Construction: from start of construction
+  // Construction
   if (yConstr !== null && year >= yConstr) return "construction";
 
-  // Not yet started => invisible
   return "none";
 }
 
 // ----------------------------
-// 3) Non-overlapping city offsets
+// Leaflet map init
 // ----------------------------
-function computeGlobalCollisionLatLngs(visibleReactors, year) {
-  // Build anchors (true positions) in pixel space
+const map = L.map("map", { preferCanvas: true }).setView([20, 0], 2);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18,
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+// ----------------------------
+// Global collision layout (pixel-space)
+// ----------------------------
+const MARKER_RADIUS_PX = 6;
+const MARKER_GAP_PX = 0;                 // allow touching
+const COLLISION_R_PX = MARKER_RADIUS_PX + MARKER_GAP_PX;
+const SIM_ITERS = 80;
+
+function computeGlobalCollisionLatLngs(visibleReactors) {
   const nodes = [];
   for (const r of visibleReactors) {
     const geo = GEO.get(cityKey(r));
@@ -264,136 +333,20 @@ function computeGlobalCollisionLatLngs(visibleReactors, year) {
     });
   }
 
-  // Physics: pull to anchor + collide globally
   const sim = d3.forceSimulation(nodes)
-    .force("x", d3.forceX(d => d.ax).strength(0.6))
-    .force("y", d3.forceY(d => d.ay).strength(0.6))
+    .force("x", d3.forceX(d => d.ax).strength(0.65))
+    .force("y", d3.forceY(d => d.ay).strength(0.65))
     .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(2))
     .stop();
 
   for (let t = 0; t < SIM_ITERS; t++) sim.tick();
 
   const out = new Map();
-  for (const n of nodes) {
-    out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
-  }
+  for (const n of nodes) out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
   return out;
 }
 
-function cityKey(r) {
-  const city = (r.location_closest_city || "").trim().toLowerCase();
-  const country = (r.country || "").trim().toLowerCase();
-  return `${city}|${country}`;
-}
-
-function offsetLatLon(lat, lon, idx, total) {
-  // Small “ring” offset: remember 1 deg lat ~111km. Use ~0.02 deg ~2.2km. Adjust smaller if needed.
-  const radius = 0.015; // degrees
-  if (total <= 1) return [lat, lon];
-
-  // deterministic angle by index
-  const angle = (idx / total) * Math.PI * 2;
-  const dLat = radius * Math.cos(angle);
-  const dLon = radius * Math.sin(angle) / Math.cos(lat * Math.PI / 180);
-  return [lat + dLat, lon + dLon];
-}
-
-// ----------------------------
-// 4) Geocoding (Nominatim) with caching
-// ----------------------------
-// You can replace this with your own lat/lon in the dataset to avoid geocoding.
-function loadGeoCache() {
-  try {
-    const raw = localStorage.getItem("rrdb_geo_cache_v1");
-    if (!raw) return;
-    const obj = JSON.parse(raw);
-    for (const [k, v] of Object.entries(obj)) GEO.set(k, v);
-  } catch {}
-}
-
-function saveGeoCache() {
-  try {
-    const obj = Object.fromEntries(GEO.entries());
-    localStorage.setItem("rrdb_geo_cache_v1", JSON.stringify(obj));
-  } catch {}
-}
-
-async function geocodeCity(city, country) {
-  const q = encodeURIComponent(`${city}, ${country}`);
-  // Nominatim usage policy expects polite usage; we rate-limit below.
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${q}`;
-  const resp = await fetch(url, { headers: { "Accept": "application/json" }});
-  const js = await resp.json();
-  if (!Array.isArray(js) || js.length === 0) return null;
-  return { lat: Number(js[0].lat), lon: Number(js[0].lon) };
-}
-
-async function ensureGeocodesForReactors(reactors) {
-  loadGeoCache();
-
-  // Build unique city keys needing geocode
-  const need = [];
-  for (const r of reactors) {
-    const c = (r.location_closest_city || "").trim();
-    const co = (r.country || "").trim();
-    if (!c || !co) continue;
-    const k = cityKey(r);
-    if (!GEO.has(k)) need.push({ k, city: c, country: co });
-  }
-
-  // Rate-limit (1 request/sec) to be nice
-  for (let i = 0; i < need.length; i++) {
-    const item = need[i];
-    const res = await geocodeCity(item.city, item.country);
-    if (res) GEO.set(item.k, res);
-    saveGeoCache();
-    // 1 second pause
-    await new Promise(r => setTimeout(r, 1000));
-  }
-}
-
-// ----------------------------
-// 5) Map + markers
-// ----------------------------
-const MARKER_RADIUS_PX = 6;   // match circleMarker radius
-const MARKER_GAP_PX = 0;
-const COLLISION_R_PX = MARKER_RADIUS_PX + MARKER_GAP_PX;
-const SIM_ITERS = 80;
-
-function computeCollisionLatLngsForCity(baseLatLng, reactorsVisible) {
-  const basePt = map.latLngToLayerPoint(baseLatLng);
-
-  const nodes = reactorsVisible.map((r, i) => ({
-    id: r.iaea_code,
-    x: basePt.x + (i % 3) * 0.01,   // tiny deterministic jitter
-    y: basePt.y + (i % 3) * 0.01
-  }));
-
-  const sim = d3.forceSimulation(nodes)
-    .force("x", d3.forceX(basePt.x).strength(0.4))
-    .force("y", d3.forceY(basePt.y).strength(0.4))
-    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(2))
-    .stop();
-
-  for (let t = 0; t < SIM_ITERS; t++) sim.tick();
-
-  const out = new Map();
-  for (const n of nodes) {
-    out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
-  }
-  return out;
-}
-
-
-
-const map = L.map("map", { preferCanvas: true }).setView([20, 0], 2);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 18,
-  attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
-
-
-// re-layout on zoom/pan (pixel-space collisions need recompute)
+// re-layout on zoom/pan
 let relayoutTimer = null;
 function scheduleRelayout() {
   clearTimeout(relayoutTimer);
@@ -401,97 +354,200 @@ function scheduleRelayout() {
     renderYear(Number(yearSlider.value), { fromMapEvent: true });
   }, 80);
 }
-
 map.on("zoomend moveend", scheduleRelayout);
 
-function markerStyleForState(state) {
-  const color = COLORS[state] || "#999";
-  return {
-    radius: 6,
-    color: "rgba(0,0,0,0.25)",
-    weight: 1,
-    fillColor: color,
-    fillOpacity: 0.95
-  };
-}
+// ----------------------------
+// Criticality chart (D3) — integral + differential
+// ----------------------------
+let MIN_YEAR = 1950;
+let CRIT_SERIES = null;
+let critSvg, critG, critX, critYLeft, critYRight, critLinePath, critBarsG, critXAxisG, critYLeftG, critYRightG;
+let critInnerH = 0, critInnerW = 0;
 
-function makePopup(r, state, year) {
-  const lines = [
-    `<b>${escapeHtml(r.name || "")}</b>`,
-    `<div><code>${escapeHtml(r.iaea_code || "")}</code></div>`,
-    `<div>${escapeHtml(r.location_closest_city || "")}, ${escapeHtml(r.country || "")}</div>`,
-    `<div>Status@${year}: <b>${escapeHtml(state)}</b></div>`,
-    `<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">`,
-    `<div>Start construction: ${escapeHtml(r.start_of_construction || "")}</div>`,
-    `<div>First criticality: ${escapeHtml(r.first_criticality || "")}</div>`,
-    `<div>Temp shutdown: ${escapeHtml(r.tmp_shutdown_date || "")}</div>`,
-    `<div>Shutdown: ${escapeHtml(r.shutdown_date || "")}</div>`,
-  ];
-  return lines.join("");
-}
+function buildCriticalitySeries(reactors, minYear, maxYear) {
+  const yearly = new Map();
+  for (let y = minYear; y <= maxYear; y++) yearly.set(y, 0);
 
-function escapeHtml(s) {
-  return String(s || "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-
-function buildCityGroups(reactors) {
-  const groups = new Map(); // key -> [reactors]
   for (const r of reactors) {
-    const k = cityKey(r);
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(r);
+    const yCrit = parseYearLoose(r.first_criticality);
+    if (yCrit !== null && yCrit >= minYear && yCrit <= maxYear) {
+      yearly.set(yCrit, (yearly.get(yCrit) || 0) + 1);
+    }
   }
-  return groups;
+
+  let cum = 0;
+  const series = [];
+  for (let y = minYear; y <= maxYear; y++) {
+    const inc = yearly.get(y) || 0;
+    cum += inc;
+    series.push({ year: y, inc, cum });
+  }
+  return series;
 }
 
+function initCriticalityChart() {
+  const el = document.getElementById("crit-chart");
+  el.innerHTML = "";
+
+  const W = 380, H = 240;
+  const M = { top: 22, right: 52, bottom: 28, left: 52 };
+  const iw = W - M.left - M.right;
+  const ih = H - M.top - M.bottom;
+  critInnerW = iw;
+  critInnerH = ih;
+
+  CRIT_SERIES = buildCriticalitySeries(REACTORS, MIN_YEAR, FINAL_YEAR);
+
+  critSvg = d3.select(el).append("svg").attr("width", W).attr("height", H);
+  critSvg.append("text")
+    .attr("x", 10).attr("y", 16)
+    .attr("font-size", 12).attr("font-weight", 650)
+    
+
+  critG = critSvg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+  critX = d3.scaleLinear().domain([MIN_YEAR, FINAL_YEAR]).range([0, iw]);
+  critYLeft  = d3.scaleLinear().domain([0, d3.max(CRIT_SERIES, d => d.cum) || 1]).nice().range([ih, 0]);
+  critYRight = d3.scaleLinear().domain([0, d3.max(CRIT_SERIES, d => d.inc) || 1]).nice().range([ih, 0]);
+
+  critXAxisG  = critG.append("g").attr("transform", `translate(0,${ih})`);
+  critYLeftG  = critG.append("g");
+  critYRightG = critG.append("g").attr("transform", `translate(${iw},0)`);
+
+  critXAxisG.call(d3.axisBottom(critX).ticks(6).tickFormat(d3.format("d")));
+  critYLeftG.call(d3.axisLeft(critYLeft).ticks(5));
+  critYRightG.call(d3.axisRight(critYRight).ticks(5));
+
+  critYRightG.selectAll("text")
+    .attr("fill", "rgba(80,120,255,1)");   // choose your color
+  
+  critYRightG.selectAll("line")
+    .attr("stroke", "rgba(80,120,255,1)");
+  
+  critYRightG.selectAll("path")
+    .attr("stroke", "rgba(80,120,255,1)");
+  // bars + line layers
+  critBarsG = critG.append("g");
+  critLinePath = critG.append("path")
+    .attr("fill", "none")
+    .attr("stroke", "#111")           // IMPORTANT: otherwise invisible
+    .attr("stroke-opacity", 0.85)
+    .attr("stroke-width", 2);
+
+  // vertical year line
+  critG.append("line")
+    .attr("id", "crit-year-line")
+    .attr("y1", 0).attr("y2", ih)
+    .attr("stroke", "rgba(0,0,0,0.45)")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+
+  // legend (top-left, under title)
+  const leg = critSvg.append("g")
+    .attr("transform", "translate(14,32)");
+
+  leg.append("rect")
+    .attr("x", 0).attr("y", -23)
+    .attr("width", 10).attr("height", 10)
+    .attr("fill", "rgba(80,120,255,0.55)");
+
+  leg.append("text")
+    .attr("x", 14).attr("y", -15)
+    .attr("font-size", 11)
+    .text("New criticalities / year");
+
+  leg.append("line")
+    .attr("x1", 190).attr("x2", 205)
+    .attr("y1", -19).attr("y2", -19)
+    .attr("stroke", "#111")
+    .attr("stroke-width", 2);
+
+  leg.append("text")
+    .attr("x", 210).attr("y", -15)
+    .attr("font-size", 11)
+    .text("Cumulative");
+}
+
+function updateCriticalityChartToYear(year) {
+  if (!CRIT_SERIES) return;
+
+  const data = CRIT_SERIES.filter(d => d.year <= year);
+
+  const step = critX(MIN_YEAR + 1) - critX(MIN_YEAR);
+  const bw = Math.max(1, step * 0.85);
+
+  const bars = critBarsG.selectAll("rect").data(data, d => d.year);
+
+  bars.enter().append("rect")
+      .attr("fill", "rgba(80,120,255,0.55)")
+      .attr("x", d => critX(d.year) - bw/2)
+      .attr("width", bw)
+      .attr("y", d => critYRight(d.inc))
+      .attr("height", d => critYRight(0) - critYRight(d.inc))
+    .merge(bars)
+      .attr("x", d => critX(d.year) - bw/2)
+      .attr("width", bw)
+      .attr("y", d => critYRight(d.inc))
+      .attr("height", d => critYRight(0) - critYRight(d.inc));
+
+  bars.exit().remove();
+
+  const line = d3.line()
+    .x(d => critX(d.year))
+    .y(d => critYLeft(d.cum));
+
+  critLinePath.datum(data).attr("d", line);
+
+  critG.select("#crit-year-line")
+    .attr("x1", critX(year))
+    .attr("x2", critX(year));
+}
+
+// ----------------------------
+// Render year (map + chart)
+// ----------------------------
 function renderYear(year, opts = {}) {
-  // Skip UI updates when called from zoom/pan relayout
   if (!opts.fromMapEvent) {
     yearSlider.value = year;
     yearLabel.textContent = year;
   }
-
-  // Basic guards
   if (!REACTORS || REACTORS.length === 0) return;
   if (!(GEO instanceof Map) || GEO.size === 0) return;
 
-  // 1) Determine visible reactors for this year
+  // Visible reactors for this year (before filter)
   const visible = [];
   for (const r of REACTORS) {
-    if (reactorStateAtYear(r, year) !== "none") visible.push(r);
+    const st = reactorStateAtYear(r, year);
+    if (st !== "none") visible.push(r);
   }
 
-  // 2) Global collision layout (pixel-space), anchored to true city locations
-  //    Requires: computeGlobalCollisionLatLngs(visibleReactors, year) to exist
-  const collisionLatLngs = computeGlobalCollisionLatLngs(visible, year);
+  // Compute global collision positions
+  const collisionLatLngs = computeGlobalCollisionLatLngs(visible);
 
-  // 3) Add/update markers for visible reactors; remove hidden ones
+  // Add/update/remove markers
   for (const r of REACTORS) {
     const state = reactorStateAtYear(r, year);
     const marker = MARKERS.get(r.iaea_code);
 
+    // Hide if not existing by dates
     if (state === "none") {
-      if (marker) {
-        map.removeLayer(marker);
-        MARKERS.delete(r.iaea_code);
-      }
+      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
+      continue;
+    }
+
+    // Apply legend filter
+    if (STATUS_FILTER !== "all" && state !== STATUS_FILTER) {
+      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
       continue;
     }
 
     const ll = collisionLatLngs.get(r.iaea_code);
     if (!ll) {
-      // No geocode for this reactor -> ensure it doesn't linger
-      if (marker) {
-        map.removeLayer(marker);
-        MARKERS.delete(r.iaea_code);
-      }
+      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
       continue;
     }
 
     const style = markerStyleForState(state);
-
     if (!marker) {
       const m = L.circleMarker(ll, style).bindPopup(makePopup(r, state, year));
       m.addTo(map);
@@ -503,101 +559,11 @@ function renderYear(year, opts = {}) {
     }
   }
 
-  updateChartToYear(year);
-}
-
-
-
-// ----------------------------
-// 6) Chart: counts over time
-// ----------------------------
-let chart = null;
-let currentYearMarker = null;
-
-const verticalYearLinePlugin = {
-  id: "verticalYearLine",
-  afterDraw(chart, args, opts) {
-    if (opts.year == null) return;
-
-    const { ctx, chartArea, scales } = chart;
-    const x = scales.x.getPixelForValue(opts.year);
-    if (x < chartArea.left || x > chartArea.right) return;
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x, chartArea.top);
-    ctx.lineTo(x, chartArea.bottom);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(0,0,0,0.35)";
-    ctx.stroke();
-    ctx.restore();
-  }
-};
-
-let chartYears = [];
-let series = { construction: [], operational: [], shutdown: [] };
-
-function buildSeries(minYear, maxYear) {
-  chartYears = [];
-  series = { construction: [], operational: [], shutdown: [] };
-
-  for (let y = minYear; y <= maxYear; y++) {
-    chartYears.push(y);
-
-    let c = 0, o = 0, s = 0;
-    for (const r of REACTORS) {
-      const state = reactorStateAtYear(r, y);
-      if (state === "construction") c++;
-      else if (state === "operational") o++;
-      else if (state === "shutdown") s++;
-      // we ignore extended here (you asked for blue/green/red lines)
-    }
-    series.construction.push(c);
-    series.operational.push(o);
-    series.shutdown.push(s);
-  }
-}
-
-function initChart() {
-  const ctx = document.getElementById("chart");
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: chartYears,
-      datasets: [
-        { label: "Construction", data: series.construction, borderColor: COLORS.construction, tension: 0.15, pointRadius: 0 },
-        { label: "Operational",  data: series.operational,  borderColor: COLORS.operational,  tension: 0.15, pointRadius: 0 },
-        { label: "Shutdown",     data: series.shutdown,     borderColor: COLORS.shutdown,     tension: 0.15, pointRadius: 0 },
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: {
-        legend: { display: true, position: "bottom" },
-        verticalYearLine: { year: Number(yearSlider.value) }   // <-- add this
-      },
-        scales: {
-        x: { ticks: { maxTicksLimit: 8 } },
-        y: { beginAtZero: true }
-      },
-      plugins: [verticalYearLinePlugin]  // <-- add this
-    }
-  });
-}
-
-function updateChartToYear(year) {
-  if (chart) {
-    chart.options.plugins.verticalYearLine.year = year;
-    chart.update("none");
-  }
-  // optional: could add a vertical marker; simplest: do nothing.
-  // If you want a marker later, we can add a plugin line at the current year.
+  updateCriticalityChartToYear(year);
 }
 
 // ----------------------------
-// 7) Timeline controls
+// Controls
 // ----------------------------
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
@@ -613,7 +579,6 @@ function setPlaying(isPlaying) {
 function startPlay() {
   if (PLAY_TIMER) return;
   setPlaying(true);
-
   PLAY_TIMER = setInterval(() => {
     const y = Number(yearSlider.value);
     const maxY = Number(yearSlider.max);
@@ -635,16 +600,28 @@ yearSlider.addEventListener("input", (e) => {
   renderYear(Number(e.target.value));
 });
 
+// Legend click filter
+document.querySelectorAll("#legend .legend-item").forEach(item => {
+  item.addEventListener("click", () => {
+    STATUS_FILTER = item.dataset.status;
+
+    document.querySelectorAll("#legend .legend-item").forEach(el => el.classList.remove("active"));
+    item.classList.add("active");
+
+    renderYear(Number(yearSlider.value));
+  });
+});
+
 // ----------------------------
-// 8) Load + boot
+// Load + boot
 // ----------------------------
-async function loadData() {
-  const resp = await fetch(DATA_URL);
-  if (!resp.ok) throw new Error(`Failed to load ${DATA_URL}`);
+async function loadJson(url) {
+  const resp = await fetch(url, { cache: "no-store" });
+  if (!resp.ok) throw new Error(`Failed to load ${url} (${resp.status})`);
   return await resp.json();
 }
 
-function computeYearRange(reactors) {
+function computeMinYearFromDates(reactors) {
   const years = [];
   for (const r of reactors) {
     for (const k of ["start_of_construction","first_criticality","tmp_shutdown_date","shutdown_date"]) {
@@ -652,41 +629,33 @@ function computeYearRange(reactors) {
       if (y !== null) years.push(y);
     }
   }
-  const minY = years.length ? Math.min(...years) : 1950;
-  const maxY = years.length ? Math.max(...years) : new Date().getFullYear();
-  return { minY, maxY };
+  return years.length ? Math.min(...years) : 1950;
 }
 
 (async function boot() {
   try {
     dataStatus.textContent = "loading reactors.json…";
-    REACTORS = await loadData();
+    REACTORS = await loadJson(DATA_URL);
     dataStatus.textContent = `${REACTORS.length} reactors loaded`;
 
-    // Determine timeline bounds from your dates
-    const { minY, maxY: dataMaxY } = computeYearRange(REACTORS);
-    const maxY = FINAL_YEAR;                 // hard cap at 2026
-    const minYear = minY;                    // keep data-driven min
+    MIN_YEAR = computeMinYearFromDates(REACTORS);
 
-    yearSlider.min = String(minYear);
-    yearSlider.max = String(maxY);
-    yearSlider.value = String(Math.max(minYear, Math.min(maxY, Number(yearSlider.value || 2000))));
+    yearSlider.min = String(MIN_YEAR);
+    yearSlider.max = String(FINAL_YEAR);
+    const initial = Math.max(MIN_YEAR, Math.min(FINAL_YEAR, Number(yearSlider.value || 2000)));
+    yearSlider.value = String(initial);
     yearLabel.textContent = yearSlider.value;
 
-    // Geocode cities (cached; first run may take time)
     dataStatus.textContent = "loading geocodes.json…";
-    const geoResp = await fetch(GEO_URL);
-    if (!geoResp.ok) throw new Error("Failed to load geocodes.json");
-    const geoObj = await geoResp.json();
+    const geoObj = await loadJson(GEO_URL);
     GEO = new Map(Object.entries(geoObj));
     dataStatus.textContent = `ready (geocodes: ${GEO.size})`;
 
+    // init chart AFTER data is loaded
+    initCriticalityChart();
+    updateCriticalityChartToYear(Number(yearSlider.value));
 
-    // Build chart series + init chart
-    buildSeries(minYear, maxY);
-    initChart();
-
-    // Render initial year
+    // initial render
     renderYear(Number(yearSlider.value));
   } catch (e) {
     console.error(e);
