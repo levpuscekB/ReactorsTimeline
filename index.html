@@ -11,6 +11,8 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
 
   <style>
 
@@ -135,6 +137,7 @@
  * Option B: paste JSON into `REACTORS` below.
  */
 const DATA_URL = "reactors.json"; // <-- put your exported file here
+const GEO_URL = "geocodes.json";
 
 let REACTORS = [];        // raw
 let GEO = new Map();      // cityKey -> {lat, lon}
@@ -180,12 +183,37 @@ function isExtendedShutdown(statusText) {
   return s.includes("EXTENDED") || s.includes("TEMP") || s.includes("SHUTDOWN");
 }
 
+const FINAL_YEAR = 2026;
+
+const STATUS_SHUTDOWN_SET = new Set([
+  "PERMANENT SHUTDOWN",
+  "UNDER DECOMMISSIONING",
+  "DECOMMISSIONED",
+]);
+
+function normStatus(s) {
+  return (s || "").toUpperCase().trim().replace(/\s+/g, " ");
+}
+
+function isShutdownByStatus(r) {
+  return STATUS_SHUTDOWN_SET.has(normStatus(r.status));
+}
+
 function reactorStateAtYear(r, year) {
   // years (may be null)
+  // If shutdown date is missing but RRDB status says it IS shutdown/decom,
+  // mark it as shutdown only at the final snapshot year (2026).
+  if (year >= FINAL_YEAR && isShutdownByStatus(r)) return "shutdown";
   const yConstr = parseYearLoose(r.start_of_construction);
   const yCrit   = parseYearLoose(r.first_criticality);
   const yTmp    = parseYearLoose(r.tmp_shutdown_date);
   const yShut   = parseYearLoose(r.shutdown_date);
+
+  const existsByDates =
+    (yConstr !== null && year >= yConstr) ||
+    (yCrit   !== null && year >= yCrit);
+  
+  if (!existsByDates) return "none";
 
   // If shutdown/decom date exists and we've passed it => shutdown
   if (yShut !== null && year >= yShut) return "shutdown";
@@ -217,6 +245,41 @@ function reactorStateAtYear(r, year) {
 // ----------------------------
 // 3) Non-overlapping city offsets
 // ----------------------------
+function computeGlobalCollisionLatLngs(visibleReactors, year) {
+  // Build anchors (true positions) in pixel space
+  const nodes = [];
+  for (const r of visibleReactors) {
+    const geo = GEO.get(cityKey(r));
+    if (!geo) continue;
+
+    const baseLatLng = L.latLng(geo.lat, geo.lon);
+    const anchor = map.latLngToLayerPoint(baseLatLng);
+
+    nodes.push({
+      id: r.iaea_code,
+      ax: anchor.x,
+      ay: anchor.y,
+      x: anchor.x,
+      y: anchor.y
+    });
+  }
+
+  // Physics: pull to anchor + collide globally
+  const sim = d3.forceSimulation(nodes)
+    .force("x", d3.forceX(d => d.ax).strength(0.6))
+    .force("y", d3.forceY(d => d.ay).strength(0.6))
+    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(2))
+    .stop();
+
+  for (let t = 0; t < SIM_ITERS; t++) sim.tick();
+
+  const out = new Map();
+  for (const n of nodes) {
+    out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
+  }
+  return out;
+}
+
 function cityKey(r) {
   const city = (r.location_closest_city || "").trim().toLowerCase();
   const country = (r.country || "").trim().toLowerCase();
@@ -292,11 +355,54 @@ async function ensureGeocodesForReactors(reactors) {
 // ----------------------------
 // 5) Map + markers
 // ----------------------------
+const MARKER_RADIUS_PX = 6;   // match circleMarker radius
+const MARKER_GAP_PX = 0;
+const COLLISION_R_PX = MARKER_RADIUS_PX + MARKER_GAP_PX;
+const SIM_ITERS = 80;
+
+function computeCollisionLatLngsForCity(baseLatLng, reactorsVisible) {
+  const basePt = map.latLngToLayerPoint(baseLatLng);
+
+  const nodes = reactorsVisible.map((r, i) => ({
+    id: r.iaea_code,
+    x: basePt.x + (i % 3) * 0.01,   // tiny deterministic jitter
+    y: basePt.y + (i % 3) * 0.01
+  }));
+
+  const sim = d3.forceSimulation(nodes)
+    .force("x", d3.forceX(basePt.x).strength(0.4))
+    .force("y", d3.forceY(basePt.y).strength(0.4))
+    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(2))
+    .stop();
+
+  for (let t = 0; t < SIM_ITERS; t++) sim.tick();
+
+  const out = new Map();
+  for (const n of nodes) {
+    out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
+  }
+  return out;
+}
+
+
+
 const map = L.map("map", { preferCanvas: true }).setView([20, 0], 2);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 18,
   attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
+
+
+// re-layout on zoom/pan (pixel-space collisions need recompute)
+let relayoutTimer = null;
+function scheduleRelayout() {
+  clearTimeout(relayoutTimer);
+  relayoutTimer = setTimeout(() => {
+    renderYear(Number(yearSlider.value), { fromMapEvent: true });
+  }, 80);
+}
+
+map.on("zoomend moveend", scheduleRelayout);
 
 function markerStyleForState(state) {
   const color = COLORS[state] || "#999";
@@ -340,53 +446,67 @@ function buildCityGroups(reactors) {
   return groups;
 }
 
-function renderYear(year) {
-  // update label/slider
-  yearSlider.value = year;
-  yearLabel.textContent = year;
+function renderYear(year, opts = {}) {
+  // Skip UI updates when called from zoom/pan relayout
+  if (!opts.fromMapEvent) {
+    yearSlider.value = year;
+    yearLabel.textContent = year;
+  }
 
-  // group reactors by city for offsetting
-  const groups = buildCityGroups(REACTORS);
+  // Basic guards
+  if (!REACTORS || REACTORS.length === 0) return;
+  if (!(GEO instanceof Map) || GEO.size === 0) return;
 
-  for (const [k, list] of groups.entries()) {
-    const geo = GEO.get(k);
-    if (!geo) continue;
+  // 1) Determine visible reactors for this year
+  const visible = [];
+  for (const r of REACTORS) {
+    if (reactorStateAtYear(r, year) !== "none") visible.push(r);
+  }
 
-    // consistent order so offsets are stable
-    list.sort((a,b) => String(a.iaea_code).localeCompare(String(b.iaea_code)));
+  // 2) Global collision layout (pixel-space), anchored to true city locations
+  //    Requires: computeGlobalCollisionLatLngs(visibleReactors, year) to exist
+  const collisionLatLngs = computeGlobalCollisionLatLngs(visible, year);
 
-    for (let idx = 0; idx < list.length; idx++) {
-      const r = list[idx];
-      const state = reactorStateAtYear(r, year);
+  // 3) Add/update markers for visible reactors; remove hidden ones
+  for (const r of REACTORS) {
+    const state = reactorStateAtYear(r, year);
+    const marker = MARKERS.get(r.iaea_code);
 
-      const marker = MARKERS.get(r.iaea_code);
-
-      if (state === "none") {
-        if (marker) {
-          map.removeLayer(marker);
-          MARKERS.delete(r.iaea_code);
-        }
-        continue;
+    if (state === "none") {
+      if (marker) {
+        map.removeLayer(marker);
+        MARKERS.delete(r.iaea_code);
       }
+      continue;
+    }
 
-      const [lat, lon] = offsetLatLon(geo.lat, geo.lon, idx, list.length);
-      const style = markerStyleForState(state);
-
-      if (!marker) {
-        const m = L.circleMarker([lat, lon], style)
-          .bindPopup(makePopup(r, state, year));
-        m.addTo(map);
-        MARKERS.set(r.iaea_code, m);
-      } else {
-        marker.setLatLng([lat, lon]);
-        marker.setStyle(style);
-        marker.setPopupContent(makePopup(r, state, year));
+    const ll = collisionLatLngs.get(r.iaea_code);
+    if (!ll) {
+      // No geocode for this reactor -> ensure it doesn't linger
+      if (marker) {
+        map.removeLayer(marker);
+        MARKERS.delete(r.iaea_code);
       }
+      continue;
+    }
+
+    const style = markerStyleForState(state);
+
+    if (!marker) {
+      const m = L.circleMarker(ll, style).bindPopup(makePopup(r, state, year));
+      m.addTo(map);
+      MARKERS.set(r.iaea_code, m);
+    } else {
+      marker.setLatLng(ll);
+      marker.setStyle(style);
+      marker.setPopupContent(makePopup(r, state, year));
     }
   }
 
   updateChartToYear(year);
 }
+
+
 
 // ----------------------------
 // 6) Chart: counts over time
@@ -544,19 +664,26 @@ function computeYearRange(reactors) {
     dataStatus.textContent = `${REACTORS.length} reactors loaded`;
 
     // Determine timeline bounds from your dates
-    const { minY, maxY } = computeYearRange(REACTORS);
-    yearSlider.min = String(minY);
+    const { minY, maxY: dataMaxY } = computeYearRange(REACTORS);
+    const maxY = FINAL_YEAR;                 // hard cap at 2026
+    const minYear = minY;                    // keep data-driven min
+
+    yearSlider.min = String(minYear);
     yearSlider.max = String(maxY);
-    yearSlider.value = String(Math.max(minY, Math.min(maxY, 2000)));
+    yearSlider.value = String(Math.max(minYear, Math.min(maxY, Number(yearSlider.value || 2000))));
     yearLabel.textContent = yearSlider.value;
 
     // Geocode cities (cached; first run may take time)
-    dataStatus.textContent = "geocoding cities (cached)…";
-    await ensureGeocodesForReactors(REACTORS);
-    dataStatus.textContent = "ready";
+    dataStatus.textContent = "loading geocodes.json…";
+    const geoResp = await fetch(GEO_URL);
+    if (!geoResp.ok) throw new Error("Failed to load geocodes.json");
+    const geoObj = await geoResp.json();
+    GEO = new Map(Object.entries(geoObj));
+    dataStatus.textContent = `ready (geocodes: ${GEO.size})`;
+
 
     // Build chart series + init chart
-    buildSeries(minY, maxY);
+    buildSeries(minYear, maxY);
     initChart();
 
     // Render initial year

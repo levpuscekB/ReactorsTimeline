@@ -1,0 +1,1294 @@
+{
+  "buenos aires|argentina": {
+    "lat": -34.6095579,
+    "lon": -58.3887904
+  },
+  "ezeiza|argentina": {
+    "lat": -34.8168141,
+    "lon": -58.5474234
+  },
+  "córdoba|argentina": {
+    "lat": -31.4166867,
+    "lon": -64.1834193
+  },
+  "rosario|argentina": {
+    "lat": -32.9593609,
+    "lon": -60.6617024
+  },
+  "san carlos de bariloche|argentina": {
+    "lat": -41.1334781,
+    "lon": -71.3101474
+  },
+  "vienna|austria": {
+    "lat": 48.2083537,
+    "lon": 16.3725042
+  },
+  "graz|austria": {
+    "lat": 47.0708678,
+    "lon": 15.4382786
+  },
+  "sydney|australia": {
+    "lat": -33.8698439,
+    "lon": 151.2082848
+  },
+  "lucas heights, nsw|australia": {
+    "lat": -34.0516667,
+    "lon": 150.9847222
+  },
+  "dhaka|bangladesh": {
+    "lat": 23.7643863,
+    "lon": 90.3890144
+  },
+  "mol|belgium": {
+    "lat": 51.1840421,
+    "lon": 5.1155267
+  },
+  "ghent|belgium": {
+    "lat": 51.0538286,
+    "lon": 3.7250121
+  },
+  "sofia|bulgaria": {
+    "lat": 42.6977028,
+    "lon": 23.3217359
+  },
+  "sao paulo|brazil": {
+    "lat": -23.5506507,
+    "lon": -46.6333824
+  },
+  "belo horizonte|brazil": {
+    "lat": -19.9227318,
+    "lon": -43.9450948
+  },
+  "rio de janeiro|brazil": {
+    "lat": -22.9110137,
+    "lon": -43.2093727
+  },
+  "iperó|brazil": {
+    "lat": -23.3508977,
+    "lon": -47.687611
+  },
+  "minsk|belarus": {
+    "lat": 53.9024716,
+    "lon": 27.5618225
+  },
+  "chalk river|canada": {
+    "lat": 46.0895204,
+    "lon": -77.6345165
+  },
+  "chalk river, on|canada": {
+    "lat": 46.0895204,
+    "lon": -77.6345165
+  },
+  "hamilton, on|canada": {
+    "lat": 43.2560802,
+    "lon": -79.8728583
+  },
+  "pinawa, mb|canada": {
+    "lat": 50.1643954,
+    "lon": -95.9663705
+  },
+  "montréal, qc|canada": {
+    "lat": 45.5031824,
+    "lon": -73.5698065
+  },
+  "toronto, on|canada": {
+    "lat": 43.6534817,
+    "lon": -79.3839347
+  },
+  "montréal|canada": {
+    "lat": 45.5031824,
+    "lon": -73.5698065
+  },
+  "halifax|canada": {
+    "lat": 44.648618,
+    "lon": -63.5859487
+  },
+  "edmonton|canada": {
+    "lat": 53.5462055,
+    "lon": -113.491241
+  },
+  "saskatoon|canada": {
+    "lat": 52.131802,
+    "lon": -106.660767
+  },
+  "ottawa|canada": {
+    "lat": 45.4208777,
+    "lon": -75.6901106
+  },
+  "kingston, on|canada": {
+    "lat": 44.3054151,
+    "lon": -76.4283781
+  },
+  "kinshasa|democratic republic of the congo": {
+    "lat": -4.32171,
+    "lon": 15.3122511
+  },
+  "würenlingen|switzerland": {
+    "lat": 47.5320878,
+    "lon": 8.2569618
+  },
+  "geneva|switzerland": {
+    "lat": 46.2017559,
+    "lon": 6.1466014
+  },
+  "lausanne|switzerland": {
+    "lat": 46.5218269,
+    "lon": 6.6327025
+  },
+  "basel|switzerland": {
+    "lat": 47.5581077,
+    "lon": 7.5878261
+  },
+  "villigen|switzerland": {
+    "lat": 47.5262684,
+    "lon": 8.2147282
+  },
+  "zurich|switzerland": {
+    "lat": 47.3744489,
+    "lon": 8.5410422
+  },
+  "santiago|chile": {
+    "lat": -33.4377756,
+    "lon": -70.6504502
+  },
+  "chengdu|china": {
+    "lat": 30.659867,
+    "lon": 104.063315
+  },
+  "beijing|china": {
+    "lat": 39.9057136,
+    "lon": 116.3912972
+  },
+  "shenzhen|china": {
+    "lat": 22.5445741,
+    "lon": 114.0545429
+  },
+  "jinan|china": {
+    "lat": 36.6519754,
+    "lon": 117.1138479
+  },
+  "shanghai|china": {
+    "lat": 31.2312707,
+    "lon": 121.4700152
+  },
+  "mianyang|china": {
+    "lat": 31.4602714,
+    "lon": 104.7160723
+  },
+  "bogota|colombia": {
+    "lat": 4.6533817,
+    "lon": -74.0836331
+  },
+  "prague|czech republic": {
+    "lat": 50.0874654,
+    "lon": 14.4212535
+  },
+  "plzen|czech republic": {
+    "lat": 49.7477415,
+    "lon": 13.3775249
+  },
+  "rež|czech republic": {
+    "lat": 50.1724109,
+    "lon": 14.3611657
+  },
+  "darmstadt|germany": {
+    "lat": 49.872775,
+    "lon": 8.651177
+  },
+  "berlin|germany": {
+    "lat": 52.5173885,
+    "lon": 13.3951309
+  },
+  "garching / munich|germany": {
+    "lat": 48.2516206,
+    "lon": 11.6351616
+  },
+  "geesthacht|germany": {
+    "lat": 53.4374683,
+    "lon": 10.3678235
+  },
+  "jülich|germany": {
+    "lat": 50.9220931,
+    "lon": 6.3611015
+  },
+  "karlsruhe|germany": {
+    "lat": 49.0068705,
+    "lon": 8.4034195
+  },
+  "karlstein am main|germany": {
+    "lat": 50.0443203,
+    "lon": 9.0337844
+  },
+  "mainz|germany": {
+    "lat": 49.9995205,
+    "lon": 8.2736253
+  },
+  "munich|germany": {
+    "lat": 48.1371079,
+    "lon": 11.5753822
+  },
+  "stuttgart|germany": {
+    "lat": 48.7784485,
+    "lon": 9.1800132
+  },
+  "heidelberg|germany": {
+    "lat": 49.4093582,
+    "lon": 8.694724
+  },
+  "braunschweig|germany": {
+    "lat": 52.2646577,
+    "lon": 10.5236066
+  },
+  "aachen|germany": {
+    "lat": 50.776351,
+    "lon": 6.083862
+  },
+  "hamburg|germany": {
+    "lat": 53.550341,
+    "lon": 10.000654
+  },
+  "kiel|germany": {
+    "lat": 54.3227085,
+    "lon": 10.135555
+  },
+  "ulm|germany": {
+    "lat": 48.3984968,
+    "lon": 9.9912458
+  },
+  "bremen|germany": {
+    "lat": 53.0758196,
+    "lon": 8.8071646
+  },
+  "hannover|germany": {
+    "lat": 52.3744779,
+    "lon": 9.7385532
+  },
+  "furtwangen im schwarzwald|germany": {
+    "lat": 48.0512198,
+    "lon": 8.2073776
+  },
+  "frankfurt am main|germany": {
+    "lat": 50.1106444,
+    "lon": 8.6820917
+  },
+  "dresden / rossendorf|germany": {
+    "lat": 51.3519638,
+    "lon": 12.431902
+  },
+  "dresden/rossendorf|germany": {
+    "lat": 51.3519638,
+    "lon": 12.431902
+  },
+  "dresden|germany": {
+    "lat": 51.0493286,
+    "lon": 13.7381437
+  },
+  "zittau|germany": {
+    "lat": 50.8960964,
+    "lon": 14.8064807
+  },
+  "garching bei münchen|germany": {
+    "lat": 48.2513878,
+    "lon": 11.6509662
+  },
+  "roskilde|denmark": {
+    "lat": 55.6433478,
+    "lon": 12.0819247
+  },
+  "algiers|algeria": {
+    "lat": 36.7729333,
+    "lon": 3.0588445
+  },
+  "djelfa|algeria": {
+    "lat": 34.342841,
+    "lon": 3.2172531
+  },
+  "cairo|egypt": {
+    "lat": 30.0443879,
+    "lon": 31.2357257
+  },
+  "madrid|spain": {
+    "lat": 40.416782,
+    "lon": -3.703507
+  },
+  "barcelona|spain": {
+    "lat": 41.3825802,
+    "lon": 2.177073
+  },
+  "bilbao|spain": {
+    "lat": 43.2630018,
+    "lon": -2.9350039
+  },
+  "espoo|finland": {
+    "lat": 60.2049651,
+    "lon": 24.6559808
+  },
+  "helsinki|finland": {
+    "lat": 60.1666204,
+    "lon": 24.9435408
+  },
+  "saclay|france": {
+    "lat": 48.7305162,
+    "lon": 2.172576
+  },
+  "grenoble|france": {
+    "lat": 45.1875602,
+    "lon": 5.7357819
+  },
+  "saint-paul-lès-durance|france": {
+    "lat": 43.6869938,
+    "lon": 5.7077225
+  },
+  "fontenay-aux-roses|france": {
+    "lat": 48.7911052,
+    "lon": 2.2870373
+  },
+  "saint-paul-les-durance|france": {
+    "lat": 43.6869938,
+    "lon": 5.7077225
+  },
+  "carhaix-plouguer|france": {
+    "lat": 48.2764997,
+    "lon": -3.5711477
+  },
+  "cadarache|france": {
+    "lat": 43.7175602,
+    "lon": 5.7497166
+  },
+  "gif-sur-yvette|france": {
+    "lat": 48.7018823,
+    "lon": 2.134529
+  },
+  "aix-en-provence|france": {
+    "lat": 43.5298424,
+    "lon": 5.4474738
+  },
+  "marcoule|france": {
+    "lat": 44.1544559,
+    "lon": 4.7055406
+  },
+  "strasbourg|france": {
+    "lat": 48.584614,
+    "lon": 7.7507127
+  },
+  "dijon|france": {
+    "lat": 47.3215806,
+    "lon": 5.0414701
+  },
+  "bagnols-sur-cèze|france": {
+    "lat": 44.160481,
+    "lon": 4.6235831
+  },
+  "harwell|united kingdom": {
+    "lat": 51.5999743,
+    "lon": -1.2909164
+  },
+  "thurso|united kingdom": {
+    "lat": 58.5950797,
+    "lon": -3.5197482
+  },
+  "aldermaston|united kingdom": {
+    "lat": 51.38267,
+    "lon": -1.1518107
+  },
+  "didcot|united kingdom": {
+    "lat": 51.6063587,
+    "lon": -1.245999
+  },
+  "london|united kingdom": {
+    "lat": 51.5074456,
+    "lon": -0.1277653
+  },
+  "dorchester|united kingdom": {
+    "lat": 50.7132064,
+    "lon": -2.4371229
+  },
+  "derby|united kingdom": {
+    "lat": 52.9233008,
+    "lon": -1.4765491
+  },
+  "glasgow|united kingdom": {
+    "lat": 55.861155,
+    "lon": -4.2501687
+  },
+  "warrington|united kingdom": {
+    "lat": 53.4018582,
+    "lon": -2.5680224
+  },
+  "billingham|united kingdom": {
+    "lat": 54.6072779,
+    "lon": -1.2910885
+  },
+  "berkeley|united kingdom": {
+    "lat": 51.6913643,
+    "lon": -2.4585247
+  },
+  "seascale|united kingdom": {
+    "lat": 54.398941,
+    "lon": -3.4771675
+  },
+  "tbilisi|georgia": {
+    "lat": 41.6934591,
+    "lon": 44.8014495
+  },
+  "accra|ghana": {
+    "lat": 5.5571096,
+    "lon": -0.2012376
+  },
+  "athens|greece": {
+    "lat": 37.9755648,
+    "lon": 23.7348324
+  },
+  "thessaloniki|greece": {
+    "lat": 40.6403167,
+    "lon": 22.9352716
+  },
+  "budapest|hungary": {
+    "lat": 47.4813896,
+    "lon": 19.1460941
+  },
+  "bandung|indonesia": {
+    "lat": -6.9218457,
+    "lon": 107.6070833
+  },
+  "yogyakarta|indonesia": {
+    "lat": -7.9778384,
+    "lon": 110.3672257
+  },
+  "serpong|indonesia": {
+    "lat": -6.3201527,
+    "lon": 106.6655836
+  },
+  "yavne|israel": {
+    "lat": 31.8768863,
+    "lon": 34.7382974
+  },
+  "mumbai|india": {
+    "lat": 19.054999,
+    "lon": 72.8692035
+  },
+  "kalpakkam|india": {
+    "lat": 12.5092553,
+    "lon": 80.1572349
+  },
+  "visakhapatnam|india": {
+    "lat": 17.6935526,
+    "lon": 83.2921297
+  },
+  "baghdad|iraq": {
+    "lat": 33.3061701,
+    "lon": 44.3872213
+  },
+  "bologna|italy": {
+    "lat": 44.4938203,
+    "lon": 11.3426327
+  },
+  "pisa|italy": {
+    "lat": 43.4714722,
+    "lon": 10.6797912
+  },
+  "rome|italy": {
+    "lat": 41.8933203,
+    "lon": 12.4829321
+  },
+  "pavia|italy": {
+    "lat": 45.0368547,
+    "lon": 9.1378251
+  },
+  "palermo|italy": {
+    "lat": 38.1112268,
+    "lon": 13.3524434
+  },
+  "milan|italy": {
+    "lat": 45.4641943,
+    "lon": 9.1896346
+  },
+  "padua|italy": {
+    "lat": 45.4077172,
+    "lon": 11.8734455
+  },
+  "saluggia|italy": {
+    "lat": 45.2354962,
+    "lon": 8.0117019
+  },
+  "ispra|italy": {
+    "lat": 45.815457,
+    "lon": 8.6101375
+  },
+  "kingston|jamaica": {
+    "lat": 17.9712148,
+    "lon": -76.7928128
+  },
+  "amman|jordan": {
+    "lat": 31.9515694,
+    "lon": 35.9239625
+  },
+  "tokai-mura|japan": {
+    "lat": 36.4726607,
+    "lon": 140.5662106
+  },
+  "tokai|japan": {
+    "lat": 35.0228927,
+    "lon": 136.9023574
+  },
+  "osaka|japan": {
+    "lat": 34.6937569,
+    "lon": 135.5014539
+  },
+  "yokosuka|japan": {
+    "lat": 35.2814779,
+    "lon": 139.6719597
+  },
+  "tokyo|japan": {
+    "lat": 35.6768601,
+    "lon": 139.7638947
+  },
+  "kawasaki|japan": {
+    "lat": 35.5306639,
+    "lon": 139.7037668
+  },
+  "tokai mura|japan": {
+    "lat": 36.4726607,
+    "lon": 140.5662106
+  },
+  "oarai|japan": {
+    "lat": 36.3133375,
+    "lon": 140.5747222
+  },
+  "saitama|japan": {
+    "lat": 35.9754168,
+    "lon": 139.4160114
+  },
+  "almaty|kazakhstan": {
+    "lat": 43.2363924,
+    "lon": 76.9457275
+  },
+  "kurchatov|kazakhstan": {
+    "lat": 50.7395577,
+    "lon": 78.5485292
+  },
+  "salaspils|latvia": {
+    "lat": 56.8634541,
+    "lon": 24.3545214
+  },
+  "tajoura|libya": {
+    "lat": 32.8834447,
+    "lon": 13.3525476
+  },
+  "rabat|morocco": {
+    "lat": 34.0218454,
+    "lon": -6.8408929
+  },
+  "ulaanbaatar|mongolia": {
+    "lat": 47.9184676,
+    "lon": 106.9177016
+  },
+  "la marquesa ocoyoacac|mexico": {
+    "lat": 19.2954498,
+    "lon": -99.3559143
+  },
+  "mexico city|mexico": {
+    "lat": 19.3207722,
+    "lon": -99.1514678
+  },
+  "zacatecas|mexico": {
+    "lat": 23.0916177,
+    "lon": -102.9333954
+  },
+  "kajang|malaysia": {
+    "lat": 2.9948437,
+    "lon": 101.7896595
+  },
+  "zaria|nigeria": {
+    "lat": 11.0248119,
+    "lon": 7.6518533
+  },
+  "abuja|nigeria": {
+    "lat": 9.0643305,
+    "lon": 7.4892974
+  },
+  "halden|norway": {
+    "lat": 59.0680555,
+    "lon": 11.537191
+  },
+  "kjeller|norway": {
+    "lat": 59.9738693,
+    "lon": 11.0475937
+  },
+  "lima|peru": {
+    "lat": -12.0459808,
+    "lon": -77.0305912
+  },
+  "quezon city|philippines": {
+    "lat": 14.6510546,
+    "lon": 121.0486254
+  },
+  "islamabad|pakistan": {
+    "lat": 33.6938118,
+    "lon": 73.0651511
+  },
+  "otwock|poland": {
+    "lat": 52.1161661,
+    "lon": 21.293459
+  },
+  "lisbon|portugal": {
+    "lat": 38.7077507,
+    "lon": -9.1365919
+  },
+  "bucharest|romania": {
+    "lat": 44.4361414,
+    "lon": 26.102684
+  },
+  "pitesti|romania": {
+    "lat": 44.8572882,
+    "lon": 24.8721156
+  },
+  "vinca|serbia": {
+    "lat": 44.7607748,
+    "lon": 20.6183498
+  },
+  "belgrade|serbia": {
+    "lat": 44.8153318,
+    "lon": 20.4456588
+  },
+  "moscow|russian federation": {
+    "lat": 55.625578,
+    "lon": 37.6063916
+  },
+  "obninsk|russian federation": {
+    "lat": 55.0999218,
+    "lon": 36.6092733
+  },
+  "gatchina|russian federation": {
+    "lat": 59.5680407,
+    "lon": 30.1252083
+  },
+  "zarechniy|russian federation": {
+    "lat": 51.142332,
+    "lon": 94.5104034
+  },
+  "dimitrovgrad|russian federation": {
+    "lat": 54.2177925,
+    "lon": 49.6254435
+  },
+  "tomsk|russian federation": {
+    "lat": 58.6124279,
+    "lon": 82.0475315
+  },
+  "dubna|russian federation": {
+    "lat": 56.7362705,
+    "lon": 37.1623696
+  },
+  "norilsk|russian federation": {
+    "lat": 69.3502367,
+    "lon": 88.2013217
+  },
+  "snezhinsk|russian federation": {
+    "lat": 56.087009,
+    "lon": 60.732674
+  },
+  "chelyabinsk|russian federation": {
+    "lat": 55.1598408,
+    "lon": 61.4025547
+  },
+  "st. petersburg|russian federation": {
+    "lat": 59.938732,
+    "lon": 30.316229
+  },
+  "electrostal|russian federation": {
+    "lat": 55.807753,
+    "lon": 38.443849
+  },
+  "nizhny novgorod|russian federation": {
+    "lat": 56.1301421,
+    "lon": 44.1364688
+  },
+  "sarov|russian federation": {
+    "lat": 54.9391673,
+    "lon": 43.3268812
+  },
+  "saint-petersburg|russian federation": {
+    "lat": 59.9606739,
+    "lon": 30.1586551
+  },
+  "jeleznogorsk|russian federation": {
+    "lat": 56.250938,
+    "lon": 93.53286
+  },
+  "podolsk|russian federation": {
+    "lat": 55.4308841,
+    "lon": 37.5453056
+  },
+  "elektrostal|russian federation": {
+    "lat": 55.784515,
+    "lon": 38.4449485
+  },
+  "riyadh|saudi arabia": {
+    "lat": 23.333333,
+    "lon": 45.333333
+  },
+  "nyköping|sweden": {
+    "lat": 58.7545409,
+    "lon": 17.0120656
+  },
+  "stockholm|sweden": {
+    "lat": 59.3251172,
+    "lon": 18.0710935
+  },
+  "ljubljana|slovenia": {
+    "lat": 46.0500268,
+    "lon": 14.5069289
+  },
+  "damascus|syrian arab republic": {
+    "lat": 33.5130695,
+    "lon": 36.3095814
+  },
+  "bangkok|thailand": {
+    "lat": 13.7524938,
+    "lon": 100.4935089
+  },
+  "nakorn ratchasima|thailand": {
+    "lat": 14.8844245,
+    "lon": 101.9046292
+  },
+  "dushanbe|tajikistan": {
+    "lat": 38.5762709,
+    "lon": 68.7863573
+  },
+  "istanbul|türkiye": {
+    "lat": 41.006381,
+    "lon": 28.9758715
+  },
+  "kiev|ukraine": {
+    "lat": 50.4500336,
+    "lon": 30.5241361
+  },
+  "sevastopol|ukraine": {
+    "lat": 44.6054434,
+    "lon": 33.5220842
+  },
+  "kharkov|ukraine": {
+    "lat": 49.9923181,
+    "lon": 36.2310146
+  },
+  "san ramon, ca|united states of america": {
+    "lat": 37.7648021,
+    "lon": -121.9544387
+  },
+  "chicago, il|united states of america": {
+    "lat": 41.8755616,
+    "lon": -87.6244212
+  },
+  "mountain view, ca|united states of america": {
+    "lat": 37.3893889,
+    "lon": -122.0832101
+  },
+  "lemont, il|united states of america": {
+    "lat": 41.6737149,
+    "lon": -88.0016263
+  },
+  "idaho falls, id|united states of america": {
+    "lat": 43.4887907,
+    "lon": -112.03628
+  },
+  "lynchburg, va|united states of america": {
+    "lat": 37.4137536,
+    "lon": -79.1422464
+  },
+  "columbus, oh|united states of america": {
+    "lat": 39.9622601,
+    "lon": -83.0007065
+  },
+  "upton, ny|united states of america": {
+    "lat": 40.869543,
+    "lon": -72.8867697
+  },
+  "west mifflin, pa|united states of america": {
+    "lat": 40.3634026,
+    "lon": -79.8664375
+  },
+  "fort worth, tx|united states of america": {
+    "lat": 32.753177,
+    "lon": -97.3327459
+  },
+  "poughkeepsie, ny|united states of america": {
+    "lat": 41.7065539,
+    "lon": -73.9283672
+  },
+  "clearfield, pa|united states of america": {
+    "lat": 40.9908706,
+    "lon": -78.4457422
+  },
+  "san diego, ca|united states of america": {
+    "lat": 32.7174202,
+    "lon": -117.162772
+  },
+  "los alamos, nm|united states of america": {
+    "lat": 35.88137,
+    "lon": -106.298959
+  },
+  "milwaukee, wi|united states of america": {
+    "lat": 43.0386475,
+    "lon": -87.9090751
+  },
+  "pleasanton, ca|united states of america": {
+    "lat": 37.6624312,
+    "lon": -121.8746789
+  },
+  "mount vernon, va|united states of america": {
+    "lat": 38.710179,
+    "lon": -77.0888199
+  },
+  "oak ridge, tn|united states of america": {
+    "lat": 36.0103562,
+    "lon": -84.2696449
+  },
+  "gaithersburg, maryland|united states of america": {
+    "lat": 39.1399187,
+    "lon": -77.1929215
+  },
+  "washington, dc|united states of america": {
+    "lat": 38.8950368,
+    "lon": -77.0365427
+  },
+  "middletown, ct|united states of america": {
+    "lat": 41.5623178,
+    "lon": -72.6509061
+  },
+  "baltimore|united states of america": {
+    "lat": 39.2908816,
+    "lon": -76.610759
+  },
+  "tuxedo, ny|united states of america": {
+    "lat": 41.1934278,
+    "lon": -74.1843129
+  },
+  "idaho falls|united states of america": {
+    "lat": 43.4887907,
+    "lon": -112.03628
+  },
+  "baton rouge, la|united states of america": {
+    "lat": 30.4494155,
+    "lon": -91.1869659
+  },
+  "pocatello, id|united states of america": {
+    "lat": 42.8620287,
+    "lon": -112.450627
+  },
+  "ames, ia|united states of america": {
+    "lat": 42.0267567,
+    "lon": -93.6170448
+  },
+  "atlanta, ga|united states of america": {
+    "lat": 33.7544657,
+    "lon": -84.3898151
+  },
+  "livermore, ca|united states of america": {
+    "lat": 37.6820583,
+    "lon": -121.768053
+  },
+  "las vegas, nv|united states of america": {
+    "lat": 36.1674263,
+    "lon": -115.1484131
+  },
+  "simi valley, ca|united states of america": {
+    "lat": 34.2677404,
+    "lon": -118.7538071
+  },
+  "manhattan, kn|united states of america": {
+    "lat": 40.7579554,
+    "lon": -73.9855319
+  },
+  "memphis, tn|united states of america": {
+    "lat": 35.1460249,
+    "lon": -90.0517638
+  },
+  "boston|united states of america": {
+    "lat": 42.3588336,
+    "lon": -71.0578303
+  },
+  "east lansing, mi|united states of america": {
+    "lat": 42.7320307,
+    "lon": -84.4721678
+  },
+  "sandusky, oh|united states of america": {
+    "lat": 41.4561002,
+    "lon": -82.7115813
+  },
+  "cleveland, oh|united states of america": {
+    "lat": 41.4996574,
+    "lon": -81.6936772
+  },
+  "plainsboro, nj|united states of america": {
+    "lat": 40.3320925,
+    "lon": -74.5933098
+  },
+  "starkville, ms|united states of america": {
+    "lat": 33.4638745,
+    "lon": -88.8152074
+  },
+  "raleigh|united states of america": {
+    "lat": 35.7803977,
+    "lon": -78.6390989
+  },
+  "hawthorne, ca|united states of america": {
+    "lat": 33.9128272,
+    "lon": -118.3426122
+  },
+  "san luis obispo, ca|united states of america": {
+    "lat": 35.3540209,
+    "lon": -120.375716
+  },
+  "washington, d.c.|united states of america": {
+    "lat": 38.8950368,
+    "lon": -77.0365427
+  },
+  "tuskegee, al|united states of america": {
+    "lat": 32.4240535,
+    "lon": -85.6908715
+  },
+  "corvallis, or|united states of america": {
+    "lat": 44.5645659,
+    "lon": -123.2620435
+  },
+  "ithaca, ny|united states of america": {
+    "lat": 42.4374175,
+    "lon": -76.5483724
+  },
+  "state college, pa|united states of america": {
+    "lat": 40.7944504,
+    "lon": -77.8616386
+  },
+  "new york, ny|united states of america": {
+    "lat": 40.7127281,
+    "lon": -74.0060152
+  },
+  "mayagüez, puerto rico|united states of america": {
+    "lat": 18.2116354,
+    "lon": -67.0953572
+  },
+  "west lafayette, in|united states of america": {
+    "lat": 40.4258686,
+    "lon": -86.9080655
+  },
+  "portland, or|united states of america": {
+    "lat": 45.5202471,
+    "lon": -122.674194
+  },
+  "schenectady, ny|united states of america": {
+    "lat": 42.8142432,
+    "lon": -73.9395687
+  },
+  "narragansett, ri|united states of america": {
+    "lat": 41.4325574,
+    "lon": -71.4579836
+  },
+  "houston, tx|united states of america": {
+    "lat": 29.7589382,
+    "lon": -95.3676974
+  },
+  "palo alto, ca|united states of america": {
+    "lat": 37.4443293,
+    "lon": -122.1598465
+  },
+  "golden, co|united states of america": {
+    "lat": 39.7546349,
+    "lon": -105.22058
+  },
+  "windsor, ct|united states of america": {
+    "lat": 41.8525984,
+    "lon": -72.6437022
+  },
+  "albuquerque, nm|united states of america": {
+    "lat": 35.0841034,
+    "lon": -106.650985
+  },
+  "aiken, sc|united states of america": {
+    "lat": 33.5723191,
+    "lon": -81.6182086
+  },
+  "dawsonville, ga|united states of america": {
+    "lat": 34.4212053,
+    "lon": -84.1190804
+  },
+  "midland, mi|united states of america": {
+    "lat": 43.6155825,
+    "lon": -84.2472117
+  },
+  "denver|united states of america": {
+    "lat": 39.7392364,
+    "lon": -104.984862
+  },
+  "omaha, ne|united states of america": {
+    "lat": 41.2587459,
+    "lon": -95.9383758
+  },
+  "aberdeen, md|united states of america": {
+    "lat": 39.5120347,
+    "lon": -76.1643289
+  },
+  "bethesda, md|united states of america": {
+    "lat": 38.9812726,
+    "lon": -77.1233587
+  },
+  "tucson, az|united states of america": {
+    "lat": 32.2228765,
+    "lon": -110.974847
+  },
+  "berkeley, ca|united states of america": {
+    "lat": 37.8708393,
+    "lon": -122.272863
+  },
+  "irvine, ca|united states of america": {
+    "lat": 33.6856969,
+    "lon": -117.825981
+  },
+  "buffalo, ny|united states of america": {
+    "lat": 42.8864163,
+    "lon": -78.8781493
+  },
+  "college station, tx|united states of america": {
+    "lat": 30.6183939,
+    "lon": -96.3455991
+  },
+  "los angeles|united states of america": {
+    "lat": 34.0536909,
+    "lon": -118.242766
+  },
+  "santa barbara, ca|united states of america": {
+    "lat": 34.4221319,
+    "lon": -119.702667
+  },
+  "newark, de|united states of america": {
+    "lat": 39.6828358,
+    "lon": -75.7515682
+  },
+  "gainesville, fl|united states of america": {
+    "lat": 29.6519684,
+    "lon": -82.3249846
+  },
+  "urbana, il|united states of america": {
+    "lat": 40.1117174,
+    "lon": -88.207301
+  },
+  "blacksburg, va|united states of america": {
+    "lat": 37.2296566,
+    "lon": -80.4136767
+  },
+  "lawrence, ks|united states of america": {
+    "lat": 38.9719137,
+    "lon": -95.2359403
+  },
+  "lowell, ma|united states of america": {
+    "lat": 42.6414437,
+    "lon": -71.3085329
+  },
+  "college park, md|united states of america": {
+    "lat": 38.980666,
+    "lon": -76.9369189
+  },
+  "ann arbor, mi|united states of america": {
+    "lat": 42.2813722,
+    "lon": -83.7484616
+  },
+  "columbia, mo|united states of america": {
+    "lat": 38.951883,
+    "lon": -92.3337366
+  },
+  "rolla, mo|united states of america": {
+    "lat": 37.9509324,
+    "lon": -91.7708076
+  },
+  "pullman, wa|united states of america": {
+    "lat": 46.7304268,
+    "lon": -117.173895
+  },
+  "norman, ok|united states of america": {
+    "lat": 35.2225717,
+    "lon": -97.4394816
+  },
+  "salt lake city, ut|united states of america": {
+    "lat": 40.7596198,
+    "lon": -111.886797
+  },
+  "charlottesville, va|united states of america": {
+    "lat": 38.029306,
+    "lon": -78.4766781
+  },
+  "seattle|united states of america": {
+    "lat": 47.6038321,
+    "lon": -122.330062
+  },
+  "madison, wi|united states of america": {
+    "lat": 43.07469,
+    "lon": -89.3841663
+  },
+  "provo, ut|united states of america": {
+    "lat": 40.2337289,
+    "lon": -111.6587085
+  },
+  "laramie, wy|united states of america": {
+    "lat": 41.3116442,
+    "lon": -105.5917876
+  },
+  "morgantown, wv|united states of america": {
+    "lat": 39.6296809,
+    "lon": -79.9559437
+  },
+  "worcester, ma|united states of america": {
+    "lat": 42.2625621,
+    "lon": -71.8018877
+  },
+  "austin, tx|united states of america": {
+    "lat": 30.2711286,
+    "lon": -97.7436995
+  },
+  "sacramento, ca|united states of america": {
+    "lat": 38.5810606,
+    "lon": -121.493895
+  },
+  "new stanton, pa|united states of america": {
+    "lat": 40.2192258,
+    "lon": -79.6097255
+  },
+  "zion, il|united states of america": {
+    "lat": 42.4501169,
+    "lon": -87.8337753
+  },
+  "ballston spa, ny|united states of america": {
+    "lat": 43.0009087,
+    "lon": -73.8490111
+  },
+  "santa susana, ca|united states of america": {
+    "lat": 34.2622252,
+    "lon": -118.673701
+  },
+  "west fork, ar|united states of america": {
+    "lat": 35.9242477,
+    "lon": -94.1885387
+  },
+  "silver spring, md|united states of america": {
+    "lat": 38.9997621,
+    "lon": -77.0240371
+  },
+  "san diego|united states of america": {
+    "lat": 32.7174202,
+    "lon": -117.162772
+  },
+  "charleston, sc|united states of america": {
+    "lat": 32.7884363,
+    "lon": -79.9399309
+  },
+  "saxton, pa|united states of america": {
+    "lat": 40.2153571,
+    "lon": -78.244467
+  },
+  "watertown, ma|united states of america": {
+    "lat": 42.3652576,
+    "lon": -71.1843234
+  },
+  "las cruces, nm|united states of america": {
+    "lat": 32.3140354,
+    "lon": -106.779807
+  },
+  "richland, wa|united states of america": {
+    "lat": 46.2804298,
+    "lon": -119.275205
+  },
+  "montevideo|uruguay": {
+    "lat": -34.9058916,
+    "lon": -56.1913095
+  },
+  "tashkent|uzbekistan": {
+    "lat": 41.3123363,
+    "lon": 69.2787079
+  },
+  "dalat|viet nam": {
+    "lat": 11.9082632,
+    "lon": 108.4572089
+  },
+  "da lat|viet nam": {
+    "lat": 11.9402416,
+    "lon": 108.4375758
+  },
+  "pretoria|south africa": {
+    "lat": -25.7459277,
+    "lon": 28.1879101
+  },
+  "el alto|bolivia, plurinational state of": {
+    "lat": -16.5048228,
+    "lon": -68.1624337
+  },
+  "geesthact|germany": {
+    "lat": 53.4374683,
+    "lon": 10.3678235
+  },
+  "tehran|iran, islamic republic of": {
+    "lat": 35.6892523,
+    "lon": 51.3896004
+  },
+  "isfahan|iran, islamic republic of": {
+    "lat": 32.6707877,
+    "lon": 51.6650002
+  },
+  "khondab|iran, islamic republic of": {
+    "lat": 34.3933112,
+    "lon": 49.1840004
+  },
+  "nyongbyon|dem. p.r. of korea": {
+    "lat": 39.7891909,
+    "lon": 125.7629992
+  },
+  "seoul|korea, republic of": {
+    "lat": 37.5666791,
+    "lon": 126.9782914
+  },
+  "yongin|korea, republic of": {
+    "lat": 37.2405741,
+    "lon": 127.1785572
+  },
+  "daejeon|korea, republic of": {
+    "lat": 36.3497007,
+    "lon": 127.3849016
+  },
+  "busan|korea, republic of": {
+    "lat": 35.1799528,
+    "lon": 129.0752365
+  },
+  "schagen|netherlands, kingdom of the": {
+    "lat": 52.7882212,
+    "lon": 4.7413568
+  },
+  "delft|netherlands, kingdom of the": {
+    "lat": 52.0114017,
+    "lon": 4.35839
+  },
+  "wageningen|netherlands, kingdom of the": {
+    "lat": 51.9663016,
+    "lon": 5.6662814
+  },
+  "petten|netherlands, kingdom of the": {
+    "lat": 52.7685974,
+    "lon": 4.6626091
+  },
+  "arnhem|netherlands, kingdom of the": {
+    "lat": 52.0056642,
+    "lon": 5.8762345
+  },
+  "eindhoven|netherlands, kingdom of the": {
+    "lat": 51.4392648,
+    "lon": 5.478633
+  },
+  "hsinchu city|taiwan, china": {
+    "lat": 24.8066333,
+    "lon": 120.9686833
+  },
+  "taoyuan city|taiwan, china": {
+    "lat": 24.9929995,
+    "lon": 121.3010003
+  },
+  "san antonio de los altos|venezuela, bolivarian republic of": {
+    "lat": 10.3751347,
+    "lon": -66.9665409
+  }
+}
