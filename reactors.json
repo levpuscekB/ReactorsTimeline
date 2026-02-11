@@ -5,7 +5,7 @@
     "country": "Argentina",
     "location_closest_city": "Buenos Aires",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1957-04-01",
     "first_criticality": "1958-01-20",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -16,7 +16,7 @@
     "country": "Argentina",
     "location_closest_city": "Ezeiza",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1963-02-01",
     "first_criticality": "1967-05-17",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -49,7 +49,7 @@
     "country": "Argentina",
     "location_closest_city": "Rosario",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1971-01-01",
     "first_criticality": "1972-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -61,7 +61,7 @@
     "location_closest_city": "San Carlos de Bariloche",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1982-09-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -126,8 +126,8 @@
     "country": "Australia",
     "location_closest_city": "Sydney",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1956-06-01",
+    "first_criticality": "1958-01-26",
     "tmp_shutdown_date": "",
     "shutdown_date": "2007-01-30"
   },
@@ -445,7 +445,7 @@
     "country": "Canada",
     "location_closest_city": "Pinawa, MB",
     "status": "UNDER DECOMMISSIONING",
-    "start_of_construction": "",
+    "start_of_construction": "1962-11-01",
     "first_criticality": "1965-11-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -532,7 +532,7 @@
     "name": "SLOWPOKE-2, RMC",
     "country": "Canada",
     "location_closest_city": "Kingston, ON",
-    "status": "",
+    "status": "OPERATIONAL",
     "start_of_construction": "1985-08-20",
     "first_criticality": "1985-09-06",
     "tmp_shutdown_date": "",
@@ -544,7 +544,7 @@
     "country": "Canada",
     "location_closest_city": "Chalk River, ON",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1997-10-10",
     "first_criticality": "",
     "tmp_shutdown_date": "",
     "shutdown_date": "2008-05-19"
@@ -554,7 +554,7 @@
     "name": "SDR SLOWPOKE Demo Reactor",
     "country": "Canada",
     "location_closest_city": "Pinawa, MB",
-    "status": "",
+    "status": "DECOMMISSIONED",
     "start_of_construction": "1985-01-01",
     "first_criticality": "1987-07-15",
     "tmp_shutdown_date": "",
@@ -611,7 +611,7 @@
     "location_closest_city": "Würenlingen",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1957-04-30",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -666,7 +666,7 @@
     "location_closest_city": "Zurich",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-10-10",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -699,7 +699,7 @@
     "location_closest_city": "Chengdu",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1966-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1983-01-01"
   },
@@ -720,7 +720,7 @@
     "country": "China",
     "location_closest_city": "Beijing",
     "status": "EXTENDED SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1967-01-01",
     "first_criticality": "1970-06-29",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -742,7 +742,7 @@
     "country": "China",
     "location_closest_city": "Beijing",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1958-12-31",
     "first_criticality": "1964-12-20",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -797,8 +797,8 @@
     "country": "China",
     "location_closest_city": "Beijing",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1986-01-01",
+    "first_criticality": "1989-11-03",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -1039,8 +1039,8 @@
     "country": "Germany",
     "location_closest_city": "Darmstadt",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1962-01-01",
+    "first_criticality": "1963-09-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1985-02-22"
   },
@@ -1128,7 +1128,7 @@
     "location_closest_city": "Mainz",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-08-03",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -1160,8 +1160,8 @@
     "country": "Germany",
     "location_closest_city": "Stuttgart",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1962-01-01",
+    "first_criticality": "1964-04-24",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -1259,8 +1259,8 @@
     "country": "Germany",
     "location_closest_city": "Karlsruhe",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1965-01-01",
+    "first_criticality": "1966-03-07",
     "tmp_shutdown_date": "",
     "shutdown_date": "1996-09-01"
   },
@@ -1348,7 +1348,7 @@
     "location_closest_city": "Jülich",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1973-07-02",
     "tmp_shutdown_date": "",
     "shutdown_date": "1984-02-03"
   },
@@ -1358,8 +1358,8 @@
     "country": "Germany",
     "location_closest_city": "Hannover",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1971-10-01",
+    "first_criticality": "1971-12-09",
     "tmp_shutdown_date": "",
     "shutdown_date": "2008-06-01"
   },
@@ -1391,8 +1391,8 @@
     "country": "Germany",
     "location_closest_city": "Karlsruhe",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1961-10-01",
+    "first_criticality": "1963-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1976-03-01"
   },
@@ -1480,7 +1480,7 @@
     "location_closest_city": "Berlin",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-07-24",
     "tmp_shutdown_date": "",
     "shutdown_date": "1972-06-01"
   },
@@ -1535,7 +1535,7 @@
     "location_closest_city": "Karlsruhe",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1964-11-20",
     "tmp_shutdown_date": "",
     "shutdown_date": "1978-12-07"
   },
@@ -1545,8 +1545,8 @@
     "country": "Denmark",
     "location_closest_city": "Roskilde",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1956-12-07",
+    "first_criticality": "1958-12-18",
     "tmp_shutdown_date": "",
     "shutdown_date": "1975-11-01"
   },
@@ -1777,7 +1777,7 @@
     "location_closest_city": "Carhaix-Plouguer",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1966-12-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -1876,7 +1876,7 @@
     "location_closest_city": "Saint-Paul-les-Durance",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1975-11-24",
     "tmp_shutdown_date": "",
     "shutdown_date": "2005-10-01"
   },
@@ -1975,7 +1975,7 @@
     "location_closest_city": "Gif-sur-Yvette",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1961-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -1996,8 +1996,8 @@
     "country": "France",
     "location_closest_city": "Strasbourg",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1965-08-01",
+    "first_criticality": "1966-11-22",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2219,7 +2219,7 @@
     "start_of_construction": "1961-05-01",
     "first_criticality": "1963-03-01",
     "tmp_shutdown_date": "",
-    "shutdown_date": ""
+    "shutdown_date": "1976-01-01"
   },
   {
     "iaea_code": "GB0010",
@@ -2249,7 +2249,7 @@
     "country": "United Kingdom",
     "location_closest_city": "Thurso",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1960-10-10",
     "first_criticality": "1961-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1997-12-01"
@@ -2272,7 +2272,7 @@
     "location_closest_city": "Glasgow",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1963-06-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2305,7 +2305,7 @@
     "location_closest_city": "Thurso",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1959-11-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2338,7 +2338,7 @@
     "location_closest_city": "Thurso",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-11-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2360,7 +2360,7 @@
     "location_closest_city": "Aldermaston",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1952-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2415,7 +2415,7 @@
     "location_closest_city": "London",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-09-04",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2436,8 +2436,8 @@
     "country": "United Kingdom",
     "location_closest_city": "Billingham",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1970-02-01",
+    "first_criticality": "1971-08-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2447,8 +2447,8 @@
     "country": "United Kingdom",
     "location_closest_city": "Dorchester",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1960-10-10",
+    "first_criticality": "1962-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1995-06-01"
   },
@@ -2580,7 +2580,7 @@
     "location_closest_city": "Didcot",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1962-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2591,7 +2591,7 @@
     "location_closest_city": "Didcot",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1962-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1967-12-01"
   },
@@ -2602,7 +2602,7 @@
     "location_closest_city": "Didcot",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1957-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2612,7 +2612,7 @@
     "country": "United Kingdom",
     "location_closest_city": "Didcot",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1954-06-01",
     "first_criticality": "1956-09-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -2635,7 +2635,7 @@
     "location_closest_city": "Didcot",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1955-12-22",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2679,7 +2679,7 @@
     "location_closest_city": "Athens",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1970-10-10",
     "tmp_shutdown_date": "",
     "shutdown_date": "1988-01-01"
   },
@@ -2921,7 +2921,7 @@
     "location_closest_city": "Mumbai",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "2018-09-10",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -2932,7 +2932,7 @@
     "location_closest_city": "Baghdad",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1967-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1991-03-01"
   },
@@ -2965,7 +2965,7 @@
     "location_closest_city": "Isfahan",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1992-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3053,7 +3053,7 @@
     "location_closest_city": "Rome",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-02-15",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3096,8 +3096,8 @@
     "country": "Italy",
     "location_closest_city": "Bologna",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1968-03-01",
+    "first_criticality": "1971-08-09",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3118,8 +3118,8 @@
     "country": "Italy",
     "location_closest_city": "Bologna",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1960-10-10",
+    "first_criticality": "1963-05-28",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3163,7 +3163,7 @@
     "location_closest_city": "Rome",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1963-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3206,8 +3206,8 @@
     "country": "Jamaica",
     "location_closest_city": "Kingston",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1982-01-01",
+    "first_criticality": "1984-03-13",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3316,8 +3316,8 @@
     "country": "Japan",
     "location_closest_city": "Tokai",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1985-08-02",
+    "first_criticality": "1990-03-22",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3361,7 +3361,7 @@
     "location_closest_city": "Tokai Mura",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-01-28",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3394,7 +3394,7 @@
     "location_closest_city": "Oarai",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1968-03-30",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3504,7 +3504,7 @@
     "location_closest_city": "Tokai-Mura",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1995-12-20",
     "tmp_shutdown_date": "",
     "shutdown_date": "2011-03-08"
   },
@@ -3570,7 +3570,7 @@
     "location_closest_city": "Seoul",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1962-03-19",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3668,7 +3668,7 @@
     "country": "Kazakhstan",
     "location_closest_city": "Kurchatov",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1956-04-01",
     "first_criticality": "1987-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1997-01-01"
@@ -3889,7 +3889,7 @@
     "location_closest_city": "Eindhoven",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1969-02-03",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -3909,9 +3909,9 @@
     "name": "PALLAS",
     "country": "Netherlands, Kingdom of the",
     "location_closest_city": "Petten",
-    "status": "",
+    "status": "UNDER CONSTRUCTION",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "2031-04-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4086,7 +4086,7 @@
     "country": "Portugal",
     "location_closest_city": "Lisbon",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1959-05-25",
     "first_criticality": "1961-04-25",
     "tmp_shutdown_date": "",
     "shutdown_date": "2016-05-11"
@@ -4207,7 +4207,7 @@
     "country": "Russian Federation",
     "location_closest_city": "Moscow",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1979-01-01",
     "first_criticality": "1981-08-12",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -4273,8 +4273,8 @@
     "country": "Russian Federation",
     "location_closest_city": "Zarechniy",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1964-01-01",
+    "first_criticality": "1966-04-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4306,8 +4306,8 @@
     "country": "Russian Federation",
     "location_closest_city": "Tomsk",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1961-01-01",
+    "first_criticality": "1967-07-22",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4505,7 +4505,7 @@
     "location_closest_city": "Chelyabinsk",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1988-12-31",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4516,7 +4516,7 @@
     "location_closest_city": "Chelyabinsk",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1981-03-31",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4526,8 +4526,8 @@
     "country": "Russian Federation",
     "location_closest_city": "Dubna",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1969-01-01",
+    "first_criticality": "1978-12-15",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4615,7 +4615,7 @@
     "location_closest_city": "Moscow",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1971-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4637,7 +4637,7 @@
     "location_closest_city": "Moscow",
     "status": "TEMPORARY SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1980-06-03",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4648,7 +4648,7 @@
     "location_closest_city": "Moscow",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1976-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4670,7 +4670,7 @@
     "location_closest_city": "Moscow",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1972-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4680,8 +4680,8 @@
     "country": "Russian Federation",
     "location_closest_city": "St. Petersburg",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1959-01-01",
+    "first_criticality": "1964-12-13",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4791,7 +4791,7 @@
     "location_closest_city": "Obninsk",
     "status": "UNDER DECOMMISSIONING",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1963-08-02",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4846,7 +4846,7 @@
     "location_closest_city": "Moscow",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1967-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -4911,7 +4911,7 @@
     "country": "Russian Federation",
     "location_closest_city": "Moscow",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1978-01-01",
     "first_criticality": "1981-08-05",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -4933,7 +4933,7 @@
     "country": "Russian Federation",
     "location_closest_city": "Moscow",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
+    "start_of_construction": "1978-01-01",
     "first_criticality": "1981-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -5099,7 +5099,7 @@
     "location_closest_city": "Electrostal",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1979-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -5110,7 +5110,7 @@
     "location_closest_city": "St. Petersburg",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1956-01-07",
     "tmp_shutdown_date": "",
     "shutdown_date": "1998-12-31"
   },
@@ -5219,8 +5219,8 @@
     "country": "Russian Federation",
     "location_closest_city": "Moscow",
     "status": "UNDER DECOMMISSIONING",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1962-10-01",
+    "first_criticality": "1963-12-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1992-06-01"
   },
@@ -5296,7 +5296,7 @@
     "country": "Russian Federation",
     "location_closest_city": "Sarov",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1976-02-01",
     "first_criticality": "1977-03-31",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -5383,9 +5383,9 @@
     "name": "VVER",
     "country": "Russian Federation",
     "location_closest_city": "Moscow",
-    "status": "",
+    "status": "EXTENDED SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1974-04-06",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -5473,7 +5473,7 @@
     "location_closest_city": "Moscow",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1975-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "2001-01-01"
   },
@@ -5637,7 +5637,7 @@
     "country": "Thailand",
     "location_closest_city": "Bangkok",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1961-01-01",
     "first_criticality": "1977-11-07",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -5736,8 +5736,8 @@
     "country": "Taiwan, China",
     "location_closest_city": "Hsinchu City",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1973-12-01",
+    "first_criticality": "1974-04-20",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -5770,7 +5770,7 @@
     "location_closest_city": "Kiev",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-12-02",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -5824,8 +5824,8 @@
     "country": "United States of America",
     "location_closest_city": "San Ramon, CA",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1963-01-01",
+    "first_criticality": "1964-07-09",
     "tmp_shutdown_date": "",
     "shutdown_date": "2010-10-15"
   },
@@ -5836,7 +5836,7 @@
     "location_closest_city": "Chicago, IL",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1942-12-02",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -5902,7 +5902,7 @@
     "location_closest_city": "Lemont, IL",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1943-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6000,8 +6000,8 @@
     "country": "United States of America",
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1957-01-01",
+    "first_criticality": "1961-09-30",
     "tmp_shutdown_date": "",
     "shutdown_date": "1994-09-01"
   },
@@ -6011,8 +6011,8 @@
     "country": "United States of America",
     "location_closest_city": "Idaho Falls, ID",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1975-01-01",
+    "first_criticality": "1977-10-12",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6022,8 +6022,8 @@
     "country": "United States of America",
     "location_closest_city": "Idaho Falls, ID",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1958-01-01",
+    "first_criticality": "1959-02-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6066,7 +6066,7 @@
     "country": "United States of America",
     "location_closest_city": "Lynchburg, VA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1958-02-01",
     "first_criticality": "1958-09-19",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -6199,7 +6199,7 @@
     "location_closest_city": "West Mifflin, PA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1953-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6209,7 +6209,7 @@
     "country": "United States of America",
     "location_closest_city": "West Mifflin, PA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1954-01-01",
     "first_criticality": "1955-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -6221,7 +6221,7 @@
     "location_closest_city": "West Mifflin, PA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1959-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6232,7 +6232,7 @@
     "location_closest_city": "Fort Worth, TX",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1954-11-17",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6320,7 +6320,7 @@
     "location_closest_city": "San Diego, CA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1966-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6440,8 +6440,8 @@
     "country": "United States of America",
     "location_closest_city": "Oak Ridge, TN",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1950-09-01",
+    "first_criticality": "1952-04-15",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6485,7 +6485,7 @@
     "location_closest_city": "Gaithersburg, Maryland",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1967-12-07",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6507,7 +6507,7 @@
     "location_closest_city": "Los Alamos, NM",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1969-02-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6572,7 +6572,7 @@
     "country": "United States of America",
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1960-01-01",
     "first_criticality": "1960-10-10",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -6683,7 +6683,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6705,7 +6705,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1952-03-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6716,7 +6716,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1961-03-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6793,7 +6793,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-03-11",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6837,7 +6837,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-10-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1994-01-31"
   },
@@ -6925,7 +6925,7 @@
     "location_closest_city": "Las Vegas, NV",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1950-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -6979,7 +6979,7 @@
     "country": "United States of America",
     "location_closest_city": "Las Vegas, NV",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1966-01-01",
     "first_criticality": "1967-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -7046,7 +7046,7 @@
     "location_closest_city": "Los Alamos, NM",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1972-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7067,7 +7067,7 @@
     "country": "United States of America",
     "location_closest_city": "Los Alamos, NM",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1946-08-01",
     "first_criticality": "1946-11-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -7156,7 +7156,7 @@
     "location_closest_city": "Boston",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-07-21",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7189,7 +7189,7 @@
     "location_closest_city": "Sandusky, OH",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1961-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7365,7 +7365,7 @@
     "location_closest_city": "Oak Ridge, TN",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1954-03-12",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7496,7 +7496,7 @@
     "country": "United States of America",
     "location_closest_city": "New York, NY",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1964-01-01",
     "first_criticality": "1968-06-20",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -7519,7 +7519,7 @@
     "location_closest_city": "Mayagüez, Puerto Rico",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1972-01-19",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7540,8 +7540,8 @@
     "country": "United States of America",
     "location_closest_city": "Portland, OR",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1965-01-01",
+    "first_criticality": "1968-07-02",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7673,7 +7673,7 @@
     "location_closest_city": "Albuquerque, NM",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1967-03-13",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7761,7 +7761,7 @@
     "location_closest_city": "Aiken, SC",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-11-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1987-01-01"
   },
@@ -7838,7 +7838,7 @@
     "location_closest_city": "Aberdeen, MD",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1968-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7860,7 +7860,7 @@
     "location_closest_city": "Tucson, AZ",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1958-12-06",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7937,7 +7937,7 @@
     "location_closest_city": "Los Angeles",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-10-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -7992,7 +7992,7 @@
     "location_closest_city": "Urbana, IL",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1969-07-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8012,9 +8012,9 @@
     "name": "KUTR Univ. Kansas",
     "country": "United States of America",
     "location_closest_city": "Lawrence, KS",
-    "status": "",
+    "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1961-06-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8024,7 +8024,7 @@
     "country": "United States of America",
     "location_closest_city": "Lowell, MA",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1966-01-01",
     "first_criticality": "1975-01-02",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -8091,7 +8091,7 @@
     "location_closest_city": "Norman, OK",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1959-02-23",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8112,7 +8112,7 @@
     "country": "United States of America",
     "location_closest_city": "Salt Lake City, UT",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1957-09-01",
     "first_criticality": "1957-09-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -8146,7 +8146,7 @@
     "location_closest_city": "Charlottesville, VA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1960-06-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8167,7 +8167,7 @@
     "country": "United States of America",
     "location_closest_city": "Madison, WI",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
+    "start_of_construction": "1959-01-01",
     "first_criticality": "1961-03-26",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -8267,7 +8267,7 @@
     "location_closest_city": "New Stanton, PA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1957-12-18",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8311,7 +8311,7 @@
     "location_closest_city": "New Stanton, PA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1959-07-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8344,7 +8344,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1954-10-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1958-06-01"
   },
@@ -8365,8 +8365,8 @@
     "country": "United States of America",
     "location_closest_city": "Idaho Falls, ID",
     "status": "PERMANENT SHUTDOWN",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1950-10-10",
+    "first_criticality": "1953-05-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1989-10-01"
   },
@@ -8398,7 +8398,7 @@
     "country": "United States of America",
     "location_closest_city": "Ballston Spa, NY",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1958-10-01",
     "first_criticality": "1961-03-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "1996-03-01"
@@ -8410,7 +8410,7 @@
     "location_closest_city": "Ballston Spa, NY",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1976-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": "2019-03-01"
   },
@@ -8421,7 +8421,7 @@
     "location_closest_city": "Ballston Spa, NY",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1979-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8431,8 +8431,8 @@
     "country": "United States of America",
     "location_closest_city": "Santa Susana, CA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1955-05-01",
+    "first_criticality": "1956-07-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8586,7 +8586,7 @@
     "location_closest_city": "Simi Valley, CA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1964-10-29",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8817,7 +8817,7 @@
     "location_closest_city": "San Diego, CA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-06-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8861,7 +8861,7 @@
     "location_closest_city": "Los Alamos, NM",
     "status": "PERMANENT SHUTDOWN",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1980-09-04",
     "tmp_shutdown_date": "",
     "shutdown_date": "2004-12-31"
   },
@@ -8938,7 +8938,7 @@
     "location_closest_city": "Las Vegas, NV",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1965-06-25",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8949,7 +8949,7 @@
     "location_closest_city": "Idaho Falls, ID",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1954-02-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8959,8 +8959,8 @@
     "country": "United States of America",
     "location_closest_city": "Charleston, SC",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1961-12-28",
+    "first_criticality": "1963-04-27",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8970,8 +8970,8 @@
     "country": "United States of America",
     "location_closest_city": "Charleston, SC",
     "status": "OPERATIONAL",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1963-12-03",
+    "first_criticality": "1964-12-20",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -8982,7 +8982,7 @@
     "location_closest_city": "Albuquerque, NM",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1989-10-24",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9003,8 +9003,8 @@
     "country": "United States of America",
     "location_closest_city": "Saxton, PA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1959-01-01",
+    "first_criticality": "1962-04-12",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9026,7 +9026,7 @@
     "location_closest_city": "Schenectady, NY",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1951-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9037,7 +9037,7 @@
     "location_closest_city": "Mountain View, CA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1961-12-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9058,8 +9058,8 @@
     "country": "United States of America",
     "location_closest_city": "Schenectady, NY",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1947-01-01",
+    "first_criticality": "1948-04-22",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9081,7 +9081,7 @@
     "location_closest_city": "Livermore, CA",
     "status": "OPERATIONAL",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "2012-09-13",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9102,8 +9102,8 @@
     "country": "United States of America",
     "location_closest_city": "Richland, WA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
-    "first_criticality": "",
+    "start_of_construction": "1954-08-01",
+    "first_criticality": "1955-10-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
@@ -9113,7 +9113,7 @@
     "country": "United States of America",
     "location_closest_city": "Richland, WA",
     "status": "DECOMMISSIONED",
-    "start_of_construction": "",
+    "start_of_construction": "1954-08-01",
     "first_criticality": "1958-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
@@ -9147,7 +9147,7 @@
     "location_closest_city": "Richland, WA",
     "status": "DECOMMISSIONED",
     "start_of_construction": "",
-    "first_criticality": "",
+    "first_criticality": "1962-01-01",
     "tmp_shutdown_date": "",
     "shutdown_date": ""
   },
