@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RRDB Timeline Map</title>
+  <title>RRDB Reactors Timeline Map</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -175,6 +175,10 @@ const STATUS_SHUTDOWN_SET = new Set([
   "DECOMMISSIONED",
 ]);
 
+function passesStatusFilter(state) {
+  return STATUS_FILTER === "all" || state === STATUS_FILTER;
+}
+
 function normStatus(s) {
   return (s || "").toUpperCase().trim().replace(/\s+/g, " ");
 }
@@ -259,35 +263,50 @@ function reactorStateAtYear(r, year) {
   const yTmp    = parseYearLoose(r.tmp_shutdown_date);
   const yShut   = parseYearLoose(r.shutdown_date);
 
-  // If it has no "existence" by dates, don't show it at all.
+  // ----------------------------
+  // 2026 snapshot override:
+  // If key dates are missing, still show the reactor using RRDB status.
+  // Status wins over dates at FINAL_YEAR.
+  // ----------------------------
+  if (year >= FINAL_YEAR) {
+    const s = normStatus(r.status);
+
+    // Shutdown / decom
+    if (isShutdownByStatus(r)) return "shutdown";
+
+    // Extended shutdown
+    if (isExtendedShutdown(s)) return "extended";
+
+    // Operational
+    if (s.includes("OPERATIONAL")) return "operational";
+
+    // Under construction (RRDB spelling varies)
+    // Under construction (RRDB spelling varies)
+    if (s.includes("UNDER CONSTRUCTION") || s.includes("UNDER CONSTRUCTIONS")) return "construction";
+
+
+    // Planned should remain invisible if no dates
+    if (s.includes("PLANNED")) return "none";
+
+    // If status is unknown, fall through to date logic.
+  }
+
+  // ----------------------------
+  // Normal date-driven logic for years < 2026
+  // ----------------------------
+
+  // reactor "exists" only after construction start OR criticality
   const existsByDates =
     (yConstr !== null && year >= yConstr) ||
     (yCrit   !== null && year >= yCrit);
 
-  if (!existsByDates) {
-    // But: at final snapshot year, allow shutdown-by-status to appear IF reactor exists at all in dataset?
-    // You asked: only mark shutdown at 2026 when date missing.
-    // Still, we keep "not shown before construction/criticality".
-    return "none";
-  }
+  if (!existsByDates) return "none";
 
-  // Known shutdown date
+  // Shutdown by date
   if (yShut !== null && year >= yShut) return "shutdown";
 
-  // Unknown shutdown date but status says shutdown/decom -> treat as shutdown only at FINAL_YEAR snapshot
-  if (year >= FINAL_YEAR && isShutdownByStatus(r)) return "shutdown";
-
-  // Extended shutdown
-  if ((yTmp !== null && year >= yTmp) || isExtendedShutdown(r.status)) {
-    // prefer operational if it clearly has criticality and tmp is missing/stale
-    if (yCrit !== null && year >= yCrit) {
-      if (yTmp === null) return "operational";
-      if (yTmp !== null && yTmp > yCrit && year >= yTmp) return "extended";
-      return "operational";
-    }
-    if (yTmp !== null && year >= yTmp) return "extended";
-    if (isExtendedShutdown(r.status)) return "extended";
-  }
+  // Extended shutdown (only if it actually started)
+  if (yTmp !== null && year >= yTmp) return "extended";
 
   // Operational
   if (yCrit !== null && year >= yCrit) return "operational";
@@ -297,6 +316,7 @@ function reactorStateAtYear(r, year) {
 
   return "none";
 }
+
 
 // ----------------------------
 // Leaflet map init
@@ -319,6 +339,7 @@ function computeGlobalCollisionLatLngs(visibleReactors) {
   const nodes = [];
   for (const r of visibleReactors) {
     const geo = GEO.get(cityKey(r));
+
     if (!geo) continue;
 
     const baseLatLng = L.latLng(geo.lat, geo.lon);
@@ -420,10 +441,10 @@ function initCriticalityChart() {
 
   critYRightG.selectAll("text")
     .attr("fill", "rgba(80,120,255,1)");   // choose your color
-  
+
   critYRightG.selectAll("line")
     .attr("stroke", "rgba(80,120,255,1)");
-  
+
   critYRightG.selectAll("path")
     .attr("stroke", "rgba(80,120,255,1)");
   // bars + line layers
@@ -507,6 +528,7 @@ function updateCriticalityChartToYear(year) {
 // Render year (map + chart)
 // ----------------------------
 function renderYear(year, opts = {}) {
+  
   if (!opts.fromMapEvent) {
     yearSlider.value = year;
     yearLabel.textContent = year;
@@ -515,31 +537,32 @@ function renderYear(year, opts = {}) {
   if (!(GEO instanceof Map) || GEO.size === 0) return;
 
   // Visible reactors for this year (before filter)
-  const visible = [];
+  // Visible reactors for this year (AFTER filter) — collisions should use only these
+  const filteredVisible = [];
   for (const r of REACTORS) {
     const st = reactorStateAtYear(r, year);
-    if (st !== "none") visible.push(r);
+    if (st === "none") continue;
+    if (STATUS_FILTER !== "all" && st !== STATUS_FILTER) continue;
+    filteredVisible.push(r);
   }
 
-  // Compute global collision positions
-  const collisionLatLngs = computeGlobalCollisionLatLngs(visible);
+  // Compute global collision positions ONLY from filtered markers
+  const collisionLatLngs = computeGlobalCollisionLatLngs(filteredVisible);
+
+
+
 
   // Add/update/remove markers
   for (const r of REACTORS) {
     const state = reactorStateAtYear(r, year);
     const marker = MARKERS.get(r.iaea_code);
 
-    // Hide if not existing by dates
-    if (state === "none") {
+    // Keep only reactors that are in the collision layout (filtered + visible)
+    if (state === "none" || (STATUS_FILTER !== "all" && state !== STATUS_FILTER)) {
       if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
       continue;
     }
 
-    // Apply legend filter
-    if (STATUS_FILTER !== "all" && state !== STATUS_FILTER) {
-      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
-      continue;
-    }
 
     const ll = collisionLatLngs.get(r.iaea_code);
     if (!ll) {
@@ -665,4 +688,3 @@ function computeMinYearFromDates(reactors) {
 </script>
 </body>
 </html>
-
