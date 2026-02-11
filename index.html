@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RRDB Reactors Timeline Map</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+
+    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    #app { height: 100%; display: grid; grid-template-rows: 1fr auto; }
+
+    #mapWrap { position: relative; }
+    #map { height: 100%; width: 100%; z-index: 1;}
+
+    /* Bottom panel */
+    #controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 10px 12px;
+      border-top: 1px solid #e6e6e6;
+      background: #fff;
+      align-items: center;
+    }
+
+    #timeline {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid #ddd;
+      background: #fafafa;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #f2f2f2; }
+    #yearLabel { font-variant-numeric: tabular-nums; font-weight: 600; width: 70px; text-align: right; }
+
+    input[type="range"] { width: 100%; }
+
+    /* Chart panel bottom-right overlay */
+    #chartCard {
+      z-index: 1000;
+      pointer-events: auto;
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 380px;
+      max-width: calc(100vw - 24px);
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #e6e6e6;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      backdrop-filter: blur(6px);
+    }
+    #chartTitle { font-size: 13px; font-weight: 700; margin: 0 0 6px; }
+    #chartWrap { height: 190px; }
+
+    /* Legend */
+    #legend {
+      z-index: 1000;  
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #e6e6e6;
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      backdrop-filter: blur(6px);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+    .swatch { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; border:1px solid rgba(0,0,0,0.15); }
+    .row { display:flex; align-items:center; margin: 3px 0; }
+    .muted { color:#666; font-size:12px; margin-top:6px; }
+    .leaflet-control-container {
+      z-index: 400;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div id="mapWrap">
+    <div id="map"></div>
+
+    <div id="legend">
+      <div class="row"><span class="swatch" style="background:#6ec6ff;"></span>Construction</div>
+      <div class="row"><span class="swatch" style="background:#34c759;"></span>Operational</div>
+      <div class="row"><span class="swatch" style="background:#ff9f0a;"></span>Extended/Temp shutdown</div>
+      <div class="row"><span class="swatch" style="background:#ff3b30;"></span>Shutdown/Decommissioned</div>
+      <div class="muted">Dots are offset within the same city so they don’t overlap.</div>
+    </div>
+
+    <div id="chartCard">
+      <p id="chartTitle">Reactor counts over time</p>
+      <div id="chartWrap"><canvas id="chart"></canvas></div>
+    </div>
+  </div>
+
+  <div id="controls">
+    <div id="timeline">
+      <button id="playBtn">Play</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <input id="yearSlider" type="range" min="1950" max="2026" step="1" value="2000">
+      <div id="yearLabel">2000</div>
+    </div>
+
+    <div style="text-align:right; font-size:12px; color:#666;">
+      Data: <code id="dataStatus">loading…</code>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * ============================
+ * 1) Load your data here
+ * ============================
+ * Option A: place `reactors.json` next to index.html and use fetch.
+ * Option B: paste JSON into `REACTORS` below.
+ */
+const DATA_URL = "reactors.json"; // <-- put your exported file here
+
+let REACTORS = [];        // raw
+let GEO = new Map();      // cityKey -> {lat, lon}
+let MARKERS = new Map();  // iaea_code -> Leaflet marker
+let PLAY_TIMER = null;
+
+const COLORS = {
+  construction: "#6ec6ff", // light blue
+  operational:  "#34c759", // green
+  extended:     "#ff9f0a", // orange
+  shutdown:     "#ff3b30"  // red
+};
+
+// ----------------------------
+// 2) Date + status logic
+// ----------------------------
+function parseYearLoose(s) {
+  if (!s) return null;
+  const str = String(s).trim();
+  if (!str) return null;
+
+  // try YYYY
+  const m1 = str.match(/\b(19\d{2}|20\d{2})\b/);
+  if (m1) return Number(m1[1]);
+
+  // try DD.MM.YYYY or DD/MM/YYYY
+  const m2 = str.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
+  if (m2) {
+    let y = m2[3];
+    if (y.length === 2) y = "20" + y;
+    return Number(y);
+  }
+
+  // try YYYY-MM-DD
+  const m3 = str.match(/(19\d{2}|20\d{2})[./-]\d{1,2}[./-]\d{1,2}/);
+  if (m3) return Number(m3[1]);
+
+  return null;
+}
+
+function isExtendedShutdown(statusText) {
+  const s = (statusText || "").toUpperCase();
+  return s.includes("EXTENDED") || s.includes("TEMP") || s.includes("SHUTDOWN");
+}
+
+function reactorStateAtYear(r, year) {
+  // years (may be null)
+  const yConstr = parseYearLoose(r.start_of_construction);
+  const yCrit   = parseYearLoose(r.first_criticality);
+  const yTmp    = parseYearLoose(r.tmp_shutdown_date);
+  const yShut   = parseYearLoose(r.shutdown_date);
+
+  // If shutdown/decom date exists and we've passed it => shutdown
+  if (yShut !== null && year >= yShut) return "shutdown";
+
+  // Extended / temp shutdown: either date passed OR status says so (best effort)
+  if ((yTmp !== null && year >= yTmp) || isExtendedShutdown(r.status)) {
+    // If they are operational later (rare), keep operational priority if crit date exists and is later than tmp
+    if (yCrit !== null && year >= yCrit) {
+      // if tmp shutdown exists and is after crit, show extended; otherwise operational
+      if (yTmp !== null && yTmp > yCrit && year >= yTmp) return "extended";
+      // status string might be stale; prefer green if clearly operational by dates and not shut down
+      if (yTmp === null) return "operational";
+    }
+    // only mark extended if it has actually started by date OR status indicates it
+    if (yTmp !== null && year >= yTmp) return "extended";
+    if (isExtendedShutdown(r.status)) return "extended";
+  }
+
+  // Operational: from first criticality
+  if (yCrit !== null && year >= yCrit) return "operational";
+
+  // Construction: from start of construction
+  if (yConstr !== null && year >= yConstr) return "construction";
+
+  // Not yet started => invisible
+  return "none";
+}
+
+// ----------------------------
+// 3) Non-overlapping city offsets
+// ----------------------------
+function cityKey(r) {
+  const city = (r.location_closest_city || "").trim().toLowerCase();
+  const country = (r.country || "").trim().toLowerCase();
+  return `${city}|${country}`;
+}
+
+function offsetLatLon(lat, lon, idx, total) {
+  // Small “ring” offset: remember 1 deg lat ~111km. Use ~0.02 deg ~2.2km. Adjust smaller if needed.
+  const radius = 0.015; // degrees
+  if (total <= 1) return [lat, lon];
+
+  // deterministic angle by index
+  const angle = (idx / total) * Math.PI * 2;
+  const dLat = radius * Math.cos(angle);
+  const dLon = radius * Math.sin(angle) / Math.cos(lat * Math.PI / 180);
+  return [lat + dLat, lon + dLon];
+}
+
+// ----------------------------
+// 4) Geocoding (Nominatim) with caching
+// ----------------------------
+// You can replace this with your own lat/lon in the dataset to avoid geocoding.
+function loadGeoCache() {
+  try {
+    const raw = localStorage.getItem("rrdb_geo_cache_v1");
+    if (!raw) return;
+    const obj = JSON.parse(raw);
+    for (const [k, v] of Object.entries(obj)) GEO.set(k, v);
+  } catch {}
+}
+
+function saveGeoCache() {
+  try {
+    const obj = Object.fromEntries(GEO.entries());
+    localStorage.setItem("rrdb_geo_cache_v1", JSON.stringify(obj));
+  } catch {}
+}
+
+async function geocodeCity(city, country) {
+  const q = encodeURIComponent(`${city}, ${country}`);
+  // Nominatim usage policy expects polite usage; we rate-limit below.
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${q}`;
+  const resp = await fetch(url, { headers: { "Accept": "application/json" }});
+  const js = await resp.json();
+  if (!Array.isArray(js) || js.length === 0) return null;
+  return { lat: Number(js[0].lat), lon: Number(js[0].lon) };
+}
+
+async function ensureGeocodesForReactors(reactors) {
+  loadGeoCache();
+
+  // Build unique city keys needing geocode
+  const need = [];
+  for (const r of reactors) {
+    const c = (r.location_closest_city || "").trim();
+    const co = (r.country || "").trim();
+    if (!c || !co) continue;
+    const k = cityKey(r);
+    if (!GEO.has(k)) need.push({ k, city: c, country: co });
+  }
+
+  // Rate-limit (1 request/sec) to be nice
+  for (let i = 0; i < need.length; i++) {
+    const item = need[i];
+    const res = await geocodeCity(item.city, item.country);
+    if (res) GEO.set(item.k, res);
+    saveGeoCache();
+    // 1 second pause
+    await new Promise(r => setTimeout(r, 1000));
+  }
+}
+
+// ----------------------------
+// 5) Map + markers
+// ----------------------------
+const map = L.map("map", { preferCanvas: true }).setView([20, 0], 2);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18,
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+function markerStyleForState(state) {
+  const color = COLORS[state] || "#999";
+  return {
+    radius: 6,
+    color: "rgba(0,0,0,0.25)",
+    weight: 1,
+    fillColor: color,
+    fillOpacity: 0.95
+  };
+}
+
+function makePopup(r, state, year) {
+  const lines = [
+    `<b>${escapeHtml(r.name || "")}</b>`,
+    `<div><code>${escapeHtml(r.iaea_code || "")}</code></div>`,
+    `<div>${escapeHtml(r.location_closest_city || "")}, ${escapeHtml(r.country || "")}</div>`,
+    `<div>Status@${year}: <b>${escapeHtml(state)}</b></div>`,
+    `<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">`,
+    `<div>Start construction: ${escapeHtml(r.start_of_construction || "")}</div>`,
+    `<div>First criticality: ${escapeHtml(r.first_criticality || "")}</div>`,
+    `<div>Temp shutdown: ${escapeHtml(r.tmp_shutdown_date || "")}</div>`,
+    `<div>Shutdown: ${escapeHtml(r.shutdown_date || "")}</div>`,
+  ];
+  return lines.join("");
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function buildCityGroups(reactors) {
+  const groups = new Map(); // key -> [reactors]
+  for (const r of reactors) {
+    const k = cityKey(r);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(r);
+  }
+  return groups;
+}
+
+function renderYear(year) {
+  // update label/slider
+  yearSlider.value = year;
+  yearLabel.textContent = year;
+
+  // group reactors by city for offsetting
+  const groups = buildCityGroups(REACTORS);
+
+  for (const [k, list] of groups.entries()) {
+    const geo = GEO.get(k);
+    if (!geo) continue;
+
+    // consistent order so offsets are stable
+    list.sort((a,b) => String(a.iaea_code).localeCompare(String(b.iaea_code)));
+
+    for (let idx = 0; idx < list.length; idx++) {
+      const r = list[idx];
+      const state = reactorStateAtYear(r, year);
+
+      const marker = MARKERS.get(r.iaea_code);
+
+      if (state === "none") {
+        if (marker) {
+          map.removeLayer(marker);
+          MARKERS.delete(r.iaea_code);
+        }
+        continue;
+      }
+
+      const [lat, lon] = offsetLatLon(geo.lat, geo.lon, idx, list.length);
+      const style = markerStyleForState(state);
+
+      if (!marker) {
+        const m = L.circleMarker([lat, lon], style)
+          .bindPopup(makePopup(r, state, year));
+        m.addTo(map);
+        MARKERS.set(r.iaea_code, m);
+      } else {
+        marker.setLatLng([lat, lon]);
+        marker.setStyle(style);
+        marker.setPopupContent(makePopup(r, state, year));
+      }
+    }
+  }
+
+  updateChartToYear(year);
+}
+
+// ----------------------------
+// 6) Chart: counts over time
+// ----------------------------
+let chart = null;
+let currentYearMarker = null;
+
+const verticalYearLinePlugin = {
+  id: "verticalYearLine",
+  afterDraw(chart, args, opts) {
+    if (opts.year == null) return;
+
+    const { ctx, chartArea, scales } = chart;
+    const x = scales.x.getPixelForValue(opts.year);
+    if (x < chartArea.left || x > chartArea.right) return;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x, chartArea.top);
+    ctx.lineTo(x, chartArea.bottom);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(0,0,0,0.35)";
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
+let chartYears = [];
+let series = { construction: [], operational: [], shutdown: [] };
+
+function buildSeries(minYear, maxYear) {
+  chartYears = [];
+  series = { construction: [], operational: [], shutdown: [] };
+
+  for (let y = minYear; y <= maxYear; y++) {
+    chartYears.push(y);
+
+    let c = 0, o = 0, s = 0;
+    for (const r of REACTORS) {
+      const state = reactorStateAtYear(r, y);
+      if (state === "construction") c++;
+      else if (state === "operational") o++;
+      else if (state === "shutdown") s++;
+      // we ignore extended here (you asked for blue/green/red lines)
+    }
+    series.construction.push(c);
+    series.operational.push(o);
+    series.shutdown.push(s);
+  }
+}
+
+function initChart() {
+  const ctx = document.getElementById("chart");
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: chartYears,
+      datasets: [
+        { label: "Construction", data: series.construction, borderColor: COLORS.construction, tension: 0.15, pointRadius: 0 },
+        { label: "Operational",  data: series.operational,  borderColor: COLORS.operational,  tension: 0.15, pointRadius: 0 },
+        { label: "Shutdown",     data: series.shutdown,     borderColor: COLORS.shutdown,     tension: 0.15, pointRadius: 0 },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: true, position: "bottom" },
+        verticalYearLine: { year: Number(yearSlider.value) }   // <-- add this
+      },
+        scales: {
+        x: { ticks: { maxTicksLimit: 8 } },
+        y: { beginAtZero: true }
+      },
+      plugins: [verticalYearLinePlugin]  // <-- add this
+    }
+  });
+}
+
+function updateChartToYear(year) {
+  if (chart) {
+    chart.options.plugins.verticalYearLine.year = year;
+    chart.update("none");
+  }
+  // optional: could add a vertical marker; simplest: do nothing.
+  // If you want a marker later, we can add a plugin line at the current year.
+}
+
+// ----------------------------
+// 7) Timeline controls
+// ----------------------------
+const playBtn = document.getElementById("playBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const yearSlider = document.getElementById("yearSlider");
+const yearLabel = document.getElementById("yearLabel");
+const dataStatus = document.getElementById("dataStatus");
+
+function setPlaying(isPlaying) {
+  playBtn.disabled = isPlaying;
+  pauseBtn.disabled = !isPlaying;
+}
+
+function startPlay() {
+  if (PLAY_TIMER) return;
+  setPlaying(true);
+
+  PLAY_TIMER = setInterval(() => {
+    const y = Number(yearSlider.value);
+    const maxY = Number(yearSlider.max);
+    const next = (y >= maxY) ? Number(yearSlider.min) : y + 1;
+    renderYear(next);
+  }, 450);
+}
+
+function stopPlay() {
+  setPlaying(false);
+  if (PLAY_TIMER) clearInterval(PLAY_TIMER);
+  PLAY_TIMER = null;
+}
+
+playBtn.addEventListener("click", startPlay);
+pauseBtn.addEventListener("click", stopPlay);
+yearSlider.addEventListener("input", (e) => {
+  stopPlay();
+  renderYear(Number(e.target.value));
+});
+
+// ----------------------------
+// 8) Load + boot
+// ----------------------------
+async function loadData() {
+  const resp = await fetch(DATA_URL);
+  if (!resp.ok) throw new Error(`Failed to load ${DATA_URL}`);
+  return await resp.json();
+}
+
+function computeYearRange(reactors) {
+  const years = [];
+  for (const r of reactors) {
+    for (const k of ["start_of_construction","first_criticality","tmp_shutdown_date","shutdown_date"]) {
+      const y = parseYearLoose(r[k]);
+      if (y !== null) years.push(y);
+    }
+  }
+  const minY = years.length ? Math.min(...years) : 1950;
+  const maxY = years.length ? Math.max(...years) : new Date().getFullYear();
+  return { minY, maxY };
+}
+
+(async function boot() {
+  try {
+    dataStatus.textContent = "loading reactors.json…";
+    REACTORS = await loadData();
+    dataStatus.textContent = `${REACTORS.length} reactors loaded`;
+
+    // Determine timeline bounds from your dates
+    const { minY, maxY } = computeYearRange(REACTORS);
+    yearSlider.min = String(minY);
+    yearSlider.max = String(maxY);
+    yearSlider.value = String(Math.max(minY, Math.min(maxY, 2000)));
+    yearLabel.textContent = yearSlider.value;
+
+    // Geocode cities (cached; first run may take time)
+    dataStatus.textContent = "geocoding cities (cached)…";
+    await ensureGeocodesForReactors(REACTORS);
+    dataStatus.textContent = "ready";
+
+    // Build chart series + init chart
+    buildSeries(minY, maxY);
+    initChart();
+
+    // Render initial year
+    renderYear(Number(yearSlider.value));
+  } catch (e) {
+    console.error(e);
+    dataStatus.textContent = "ERROR (see console)";
+  }
+})();
+</script>
+</body>
+</html>
