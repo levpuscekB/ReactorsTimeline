@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RRDB Timeline Map</title>
+  <title>RRDB Reactors Timeline Map</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -172,7 +172,7 @@
  * - reactors.json
  * - geocodes.json
  */
-const DATA_URL = "reactors_join_search.json";
+const DATA_URL = "reactors_join_search_exl.json";
 const GEO_URL  = "geocodes.json";
 
 const FINAL_YEAR = 2026;
@@ -806,8 +806,8 @@ function computeMinYearFromDates(reactors) {
   try {
     dataStatus.textContent = "loading reactors…";
 
-    REACTORS_RAW = await loadJson("reactors_join_search.json");
-    REACTORS_FILLED = await loadJson("reactors_join_filled.json");
+    REACTORS_RAW = await loadJson("reactors_join_search_exl.json");
+    REACTORS_FILLED = await loadJson("reactors_join_search_exl_filled.json");
 
     // start in non-interpolated mode
     REACTORS = REACTORS_RAW;
@@ -868,4 +868,3 @@ function computeMinYearFromDates(reactors) {
 </script>
 </body>
 </html>
-
