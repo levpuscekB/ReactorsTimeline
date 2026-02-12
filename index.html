@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RRDB Timeline Map</title>
+  <title>RRDB Reactors Timeline Map</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -172,7 +172,7 @@
  * - reactors.json
  * - geocodes.json
  */
-const DATA_URL = "reactors.json";
+const DATA_URL = "reactors_join_search.json";
 const GEO_URL  = "geocodes.json";
 
 const FINAL_YEAR = 2026;
@@ -364,7 +364,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const MARKER_RADIUS_PX = 6;
 const MARKER_GAP_PX = 0;                 // allow touching
 const COLLISION_R_PX = MARKER_RADIUS_PX + MARKER_GAP_PX;
-const SIM_ITERS = 80;
+const SIM_ITERS = 120;
 
 function computeGlobalCollisionLatLngs(visibleReactors) {
   const nodes = [];
@@ -386,9 +386,9 @@ function computeGlobalCollisionLatLngs(visibleReactors) {
   }
 
   const sim = d3.forceSimulation(nodes)
-    .force("x", d3.forceX(d => d.ax).strength(0.65))
-    .force("y", d3.forceY(d => d.ay).strength(0.65))
-    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(2))
+    .force("x", d3.forceX(d => d.ax).strength(0.35))
+    .force("y", d3.forceY(d => d.ay).strength(0.35))
+    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(4))
     .stop();
 
   for (let t = 0; t < SIM_ITERS; t++) sim.tick();
@@ -806,8 +806,8 @@ function computeMinYearFromDates(reactors) {
   try {
     dataStatus.textContent = "loading reactors…";
 
-    REACTORS_RAW = await loadJson("reactors.json");
-    REACTORS_FILLED = await loadJson("reactors_filled.json");
+    REACTORS_RAW = await loadJson("reactors_join_search.json");
+    REACTORS_FILLED = await loadJson("reactors_join_filled.json");
 
     // start in non-interpolated mode
     REACTORS = REACTORS_RAW;
@@ -868,4 +868,3 @@ function computeMinYearFromDates(reactors) {
 </script>
 </body>
 </html>
-
