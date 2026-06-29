@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RRDB Reactors Timeline Map</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- D3 (for collision layout + criticality chart) -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    #app { height: 100%; display: grid; grid-template-rows: 1fr auto; }
+
+    #mapWrap { position: relative; }
+    #map { height: 100%; width: 100%; z-index: 1; }
+
+    /* Bottom controls */
+    #controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 10px 12px;
+      border-top: 1px solid #e6e6e6;
+      background: #fff;
+      align-items: center;
+    }
+    #timeline {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    button {
+      border: 1px solid #ddd;
+      background: #fafafa;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #f2f2f2; }
+    #yearLabel { font-variant-numeric: tabular-nums; font-weight: 600; width: 70px; text-align: right; }
+    input[type="range"] { width: 100%; }
+
+    /* Legend */
+    #legend {
+      z-index: 2001;
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #e6e6e6;
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+      font-size: 13px;
+      line-height: 1.3;
+      pointer-events: auto;
+      user-select: none;
+      min-width: 220px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin: 4px 0;
+      opacity: 0.55;
+    }
+    .legend-item.active { opacity: 1; font-weight: 650; }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    /* Criticality chart overlay */
+    #crit-chart {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 390px;
+      height: 250px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      z-index: 2001;
+      pointer-events: auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+    }
+    #crit-chart svg text { fill: #111; }
+    #status-chart {
+      position: absolute;
+      top: 20px;      /* distance from top of map */
+      right: 20px;    /* distance from right side */
+      width: 380px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      z-index: 2001;
+      pointer-events: auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+    }
+
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div id="mapWrap">
+    <div id="map"></div>
+
+    <div id="status-chart" class="overlay-panel"></div>
+    <div id="crit-chart"></div>
+    
+
+    <div id="legend">
+      <div class="legend-item active" data-status="all">
+        <span class="legend-dot" style="background:#666"></span> All
+      </div>
+      <div class="legend-item" data-status="construction">
+        <span class="legend-dot" style="background:#6ec6ff"></span> Under construction
+      </div>
+      <div class="legend-item" data-status="operational">
+        <span class="legend-dot" style="background:#34c759"></span> Operational
+      </div>
+      <div class="legend-item" data-status="extended">
+        <span class="legend-dot" style="background:#ff9f0a"></span> Extended shutdown
+      </div>
+      <div class="legend-item" data-status="shutdown">
+        <span class="legend-dot" style="background:#ff3b30"></span> Shutdown / Decommissioned
+      </div>
+    <div id="interp-toggle" class="overlay-panel">
+      <label style="display:flex; gap:8px; align-items:center;">
+        <input type="checkbox" id="useInterpolated">
+        Use interpolated dates
+      </label>
+      <div id="interp-warning" style="display:none; margin-top:6px; color:#c00; font-size:12px; font-weight:600;">
+        Warning: dates are interpolated in this mode and may not represent the real situation.
+      </div>
+      <label style="display:flex; gap:8px; align-items:center; margin-top:8px;">
+        <input type="checkbox" id="europeOnly">
+        Europe only (excl. Russia, Ukraine, Turkey, Belarus)
+      </label>
+    </div>
+
+    
+    </div>
+  </div>
+
+  <div id="controls">
+    <div id="timeline">
+      <button id="playBtn">Play</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <input id="yearSlider" type="range" min="1950" max="2026" step="1" value="2000">
+      <div id="yearLabel">2000</div>
+    </div>
+
+    <div style="text-align:right; font-size:12px; color:#666;">
+      Data: <code id="dataStatus">loading…</code>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * Files expected next to index.html:
+ * - reactors.json
+ * - geocodes.json
+ */
+const DATA_URL = "reactors_join_search_exl.json";
+const GEO_URL  = "geocodes.json";
+
+const FINAL_YEAR = 2026;
+
+// ----------------------------
+// State
+// ----------------------------
+let REACTORS = [];
+let GEO = new Map();      // cityKey -> {lat, lon}
+let MARKERS = new Map();  // iaea_code -> Leaflet marker
+let PLAY_TIMER = null;
+let STATUS_FILTER = "all";
+
+let REACTORS_RAW = [];
+let REACTORS_FILLED = [];
+let USE_INTERPOLATED = false;
+let EUROPE_ONLY = false;
+
+// ----------------------------
+// Colors + status mapping
+// ----------------------------
+const COLORS = {
+  construction: "#6ec6ff",
+  operational:  "#34c759",
+  extended:     "#ff9f0a",
+  shutdown:     "#ff3b30"
+};
+
+const STATUS_SHUTDOWN_SET = new Set([
+  "PERMANENT SHUTDOWN",
+  "UNDER DECOMMISSIONING",
+  "DECOMMISSIONED",
+]);
+
+function passesStatusFilter(state) {
+  return STATUS_FILTER === "all" || state === STATUS_FILTER;
+}
+
+// Europe filter used by the map and both charts.
+// Russia, Ukraine, Turkey, and Belarus are intentionally excluded.
+const EUROPE_COUNTRIES = new Set([
+  "albania", "andorra", "austria", "belgium", "bosnia and herzegovina",
+  "bulgaria", "croatia", "cyprus", "czech republic", "czechia", "denmark",
+  "estonia", "finland", "france", "germany", "greece", "hungary",
+  "iceland", "ireland", "italy", "kosovo", "latvia", "liechtenstein",
+  "lithuania", "luxembourg", "malta", "moldova", "monaco", "montenegro",
+  "netherlands", "north macedonia", "norway", "poland", "portugal",
+  "romania", "san marino", "serbia", "slovakia", "slovenia", "spain",
+  "sweden", "switzerland", "united kingdom", "uk", "great britain",
+  "vatican city", "holy see"
+]);
+
+const EUROPE_EXCLUDED_COUNTRIES = new Set([
+  "russia", "russian federation", "ukraine", "turkey", "türkiye", "turkiye", "belarus"
+]);
+
+function normalizedCountry(r) {
+  return String(r.country || "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function isIncludedEuropeCountry(r) {
+  const c = normalizedCountry(r);
+  return EUROPE_COUNTRIES.has(c) && !EUROPE_EXCLUDED_COUNTRIES.has(c);
+}
+
+function passesRegionFilter(r) {
+  return !EUROPE_ONLY || isIncludedEuropeCountry(r);
+}
+
+function filteredReactorsForCharts() {
+  return REACTORS.filter(passesRegionFilter);
+}
+
+function normStatus(s) {
+  return (s || "").toUpperCase().trim().replace(/\s+/g, " ");
+}
+
+function isShutdownByStatus(r) {
+  return STATUS_SHUTDOWN_SET.has(normStatus(r.status));
+}
+
+function isExtendedShutdown(statusText) {
+  const s = normStatus(statusText);
+  // (best-effort: adjust if you want)
+  return s.includes("EXTENDED") || s.includes("TEMPORARY") || s.includes("TEMP") || s === "EXTENDED SHUTDOWN";
+}
+
+// ----------------------------
+// Parsing helpers
+// ----------------------------
+function parseYearLoose(s) {
+  if (!s) return null;
+  const str = String(s).trim();
+  if (!str) return null;
+
+  const m1 = str.match(/\b(19\d{2}|20\d{2})\b/);
+  if (m1) return Number(m1[1]);
+
+  const m2 = str.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
+  if (m2) {
+    let y = m2[3];
+    if (y.length === 2) y = "20" + y;
+    return Number(y);
+  }
+
+  const m3 = str.match(/(19\d{2}|20\d{2})[./-]\d{1,2}[./-]\d{1,2}/);
+  if (m3) return Number(m3[1]);
+
+  return null;
+}
+
+function cityKey(r) {
+  const city = (r.location_closest_city || "").trim().toLowerCase();
+  const country = (r.country || "").trim().toLowerCase();
+  return `${city}|${country}`;
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function makePopup(r, state, year) {
+  return [
+    `<b>${escapeHtml(r.name || "")}</b>`,
+    `<div><code>${escapeHtml(r.iaea_code || "")}</code></div>`,
+    `<div>${escapeHtml(r.location_closest_city || "")}, ${escapeHtml(r.country || "")}</div>`,
+    `<div>Status@${year}: <b>${escapeHtml(state)}</b></div>`,
+    `<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">`,
+    `<div>Start construction: ${escapeHtml(r.start_of_construction || "")}</div>`,
+    `<div>First criticality: ${escapeHtml(r.first_criticality || "")}</div>`,
+    `<div>Temp shutdown: ${escapeHtml(r.tmp_shutdown_date || "")}</div>`,
+    `<div>Shutdown: ${escapeHtml(r.shutdown_date || "")}</div>`,
+  ].join("");
+}
+
+function markerStyleForState(state) {
+  const color = COLORS[state] || "#999";
+  return {
+    radius: 6,
+    color: "rgba(0,0,0,0.25)",
+    weight: 1,
+    fillColor: color,
+    fillOpacity: 0.95
+  };
+}
+
+// ----------------------------
+// Reactor state timeline logic
+// ----------------------------
+function reactorStateAtYear(r, year) {
+  const yConstr = parseYearLoose(r.start_of_construction);
+  const yCrit   = parseYearLoose(r.first_criticality);
+  const yTmp    = parseYearLoose(r.tmp_shutdown_date);
+  const yShut   = parseYearLoose(r.shutdown_date);
+
+  // ----------------------------
+  // 2026 snapshot override:
+  // If key dates are missing, still show the reactor using RRDB status.
+  // Status wins over dates at FINAL_YEAR.
+  // ----------------------------
+  if (year >= FINAL_YEAR) {
+    const s = normStatus(r.status);
+
+    // Shutdown / decom
+    if (isShutdownByStatus(r)) return "shutdown";
+
+    // Extended shutdown
+    if (isExtendedShutdown(s)) return "extended";
+
+    // Operational
+    if (s.includes("OPERATIONAL")) return "operational";
+
+    // Under construction (RRDB spelling varies)
+    // Under construction (RRDB spelling varies)
+    if (s.includes("UNDER CONSTRUCTION") || s.includes("UNDER CONSTRUCTIONS")) return "construction";
+
+
+    // Planned should remain invisible if no dates
+    if (s.includes("PLANNED")) return "none";
+
+    // If status is unknown, fall through to date logic.
+  }
+
+  // ----------------------------
+  // Normal date-driven logic for years < 2026
+  // ----------------------------
+
+  // reactor "exists" only after construction start OR criticality
+  const existsByDates =
+    (yConstr !== null && year >= yConstr) ||
+    (yCrit   !== null && year >= yCrit);
+
+  if (!existsByDates) return "none";
+
+  // Shutdown by date
+  if (yShut !== null && year >= yShut) return "shutdown";
+
+  // Extended shutdown (only if it actually started)
+  if (yTmp !== null && year >= yTmp) return "extended";
+
+  // Operational
+  if (yCrit !== null && year >= yCrit) return "operational";
+
+  // Construction
+  if (yConstr !== null && year >= yConstr) return "construction";
+
+  return "none";
+}
+
+
+// ----------------------------
+// Leaflet map init
+// ----------------------------
+const map = L.map("map", { preferCanvas: true }).setView([20, 0], 2);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18,
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+// ----------------------------
+// Global collision layout (pixel-space)
+// ----------------------------
+const MARKER_RADIUS_PX = 6;
+const MARKER_GAP_PX = 0;                 // allow touching
+const COLLISION_R_PX = MARKER_RADIUS_PX + MARKER_GAP_PX;
+const SIM_ITERS = 120;
+
+function computeGlobalCollisionLatLngs(visibleReactors) {
+  const nodes = [];
+  for (const r of visibleReactors) {
+    const geo = GEO.get(cityKey(r));
+
+    if (!geo) continue;
+
+    const baseLatLng = L.latLng(geo.lat, geo.lon);
+    const anchor = map.latLngToLayerPoint(baseLatLng);
+
+    nodes.push({
+      id: r.iaea_code,
+      ax: anchor.x,
+      ay: anchor.y,
+      x: anchor.x,
+      y: anchor.y
+    });
+  }
+
+  const sim = d3.forceSimulation(nodes)
+    .force("x", d3.forceX(d => d.ax).strength(0.35))
+    .force("y", d3.forceY(d => d.ay).strength(0.35))
+    .force("collide", d3.forceCollide(COLLISION_R_PX).iterations(4))
+    .stop();
+
+  for (let t = 0; t < SIM_ITERS; t++) sim.tick();
+
+  const out = new Map();
+  for (const n of nodes) out.set(n.id, map.layerPointToLatLng(L.point(n.x, n.y)));
+  return out;
+}
+
+// re-layout on zoom/pan
+let relayoutTimer = null;
+function scheduleRelayout() {
+  clearTimeout(relayoutTimer);
+  relayoutTimer = setTimeout(() => {
+    renderYear(Number(yearSlider.value), { fromMapEvent: true });
+  }, 80);
+}
+map.on("zoomend moveend", scheduleRelayout);
+
+// ----------------------------
+// Status counts chart (construction/operational/extended/shutdown)
+// ----------------------------
+let STATUS_SERIES = null;
+let stSvg, stG, stX, stY;
+let stLines = {};           // {construction:path, operational:path, extended:path, shutdown:path}
+let stLegendG, stYearLine;
+
+function buildStatusSeries(reactors, minYear, maxYear) {
+  const series = [];
+  for (let y = minYear; y <= maxYear; y++) {
+    let construction = 0, operational = 0, extended = 0, shutdown = 0;
+
+    for (const r of reactors) {
+      const st = reactorStateAtYear(r, y);
+      if (st === "construction") construction++;
+      else if (st === "operational") operational++;
+      else if (st === "extended") extended++;
+      else if (st === "shutdown") shutdown++;
+    }
+
+    series.push({ year: y, construction, operational, extended, shutdown });
+  }
+  return series;
+}
+
+function initStatusCountsChart() {
+  const el = document.getElementById("status-chart");
+  if (!el) return;
+  el.innerHTML = "";
+
+  const W = 360, H = 220;
+  const M = { top: 18, right: 16, bottom: 28, left: 46 };
+  const iw = W - M.left - M.right;
+  const ih = H - M.top - M.bottom;
+
+  STATUS_SERIES = buildStatusSeries(filteredReactorsForCharts(), MIN_YEAR, FINAL_YEAR);
+
+  stSvg = d3.select(el).append("svg").attr("width", W).attr("height", H);
+  stG = stSvg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+  stX = d3.scaleLinear().domain([MIN_YEAR, FINAL_YEAR]).range([0, iw]);
+
+  const ymax = d3.max(STATUS_SERIES, d =>
+    Math.max(d.construction, d.operational, d.extended, d.shutdown)
+  ) || 1;
+
+  stY = d3.scaleLinear().domain([0, ymax]).nice().range([ih, 0]);
+
+  stG.append("g")
+    .attr("transform", `translate(0,${ih})`)
+    .call(d3.axisBottom(stX).ticks(6).tickFormat(d3.format("d")));
+
+  stG.append("g")
+    .call(d3.axisLeft(stY).ticks(5));
+
+  // Title (optional)
+  stSvg.append("text")
+    .attr("x", 10).attr("y", 14)
+    .attr("font-size", 12).attr("font-weight", 600)
+    .text("Reactor status over time");
+
+  // Line generator
+  const line = (key) => d3.line()
+    .x(d => stX(d.year))
+    .y(d => stY(d[key]));
+
+  // Create 4 line paths
+  stLines.construction = stG.append("path").attr("fill", "none").attr("stroke", COLORS.construction).attr("stroke-width", 2);
+  stLines.operational  = stG.append("path").attr("fill", "none").attr("stroke", COLORS.operational).attr("stroke-width", 2);
+  stLines.extended     = stG.append("path").attr("fill", "none").attr("stroke", COLORS.extended).attr("stroke-width", 2);
+  stLines.shutdown     = stG.append("path").attr("fill", "none").attr("stroke", COLORS.shutdown).attr("stroke-width", 2);
+
+  // Legend (simple, top-right inside chart)
+  stLegendG = stSvg.append("g").attr("transform", `translate(${W - 150},${18})`);
+  const items = [
+    ["construction", "Construction"],
+    ["operational", "Operational"],
+    ["extended", "Extended"],
+    ["shutdown", "Shutdown"],
+  ];
+  items.forEach(([k, label], i) => {
+    const g = stLegendG.append("g").attr("transform", `translate(0,${i*16})`);
+    g.append("line").attr("x1", 0).attr("x2", 14).attr("y1", 6).attr("y2", 6)
+      .attr("stroke", COLORS[k]).attr("stroke-width", 3);
+    g.append("text").attr("x", 18).attr("y", 10).attr("font-size", 11).text(label);
+  });
+
+  // Vertical year indicator
+  stYearLine = stG.append("line")
+    .attr("y1", 0).attr("y2", ih)
+    .attr("stroke", "#111")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+}
+
+function updateStatusCountsChartToYear(year) {
+  if (!STATUS_SERIES) return;
+
+  const data = STATUS_SERIES.filter(d => d.year <= year);
+
+  const line = (key) => d3.line()
+    .x(d => stX(d.year))
+    .y(d => stY(d[key]));
+
+  stLines.construction.datum(data).attr("d", line("construction"));
+  stLines.operational .datum(data).attr("d", line("operational"));
+  stLines.extended    .datum(data).attr("d", line("extended"));
+  stLines.shutdown    .datum(data).attr("d", line("shutdown"));
+
+  stYearLine.attr("x1", stX(year)).attr("x2", stX(year));
+}
+
+
+
+// ----------------------------
+// Criticality chart (D3) — integral + differential
+// ----------------------------
+let MIN_YEAR = 1950;
+let CRIT_SERIES = null;
+let critSvg, critG, critX, critYLeft, critYRight, critLinePath, critBarsG, critXAxisG, critYLeftG, critYRightG, critAvgAgeText;
+let critInnerH = 0, critInnerW = 0;
+
+function buildCriticalitySeries(reactors, minYear, maxYear) {
+  const yearly = new Map();
+  for (let y = minYear; y <= maxYear; y++) yearly.set(y, 0);
+
+  for (const r of reactors) {
+    const yCrit = parseYearLoose(r.first_criticality);
+    if (yCrit !== null && yCrit >= minYear && yCrit <= maxYear) {
+      yearly.set(yCrit, (yearly.get(yCrit) || 0) + 1);
+    }
+  }
+
+  let cum = 0;
+  const series = [];
+  for (let y = minYear; y <= maxYear; y++) {
+    const inc = yearly.get(y) || 0;
+    cum += inc;
+    series.push({ year: y, inc, cum });
+  }
+  return series;
+}
+
+function averageOperatingAgeAtYear(year) {
+  const ages = [];
+  for (const r of filteredReactorsForCharts()) {
+    if (reactorStateAtYear(r, year) !== "operational") continue;
+    const yCrit = parseYearLoose(r.first_criticality);
+    if (yCrit !== null && yCrit <= year) ages.push(year - yCrit);
+  }
+
+  if (!ages.length) return null;
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
+}
+
+function updateCriticalityAvgAgeLabel(year) {
+  if (!critAvgAgeText) return;
+  const avg = averageOperatingAgeAtYear(year);
+  critAvgAgeText.text(avg === null ? "Avg operating age: n/a" : `Avg operating age: ${avg.toFixed(1)} y`);
+}
+
+function initCriticalityChart() {
+  const el = document.getElementById("crit-chart");
+  el.innerHTML = "";
+
+  const W = 380, H = 240;
+  const M = { top: 22, right: 52, bottom: 28, left: 52 };
+  const iw = W - M.left - M.right;
+  const ih = H - M.top - M.bottom;
+  critInnerW = iw;
+  critInnerH = ih;
+
+  CRIT_SERIES = buildCriticalitySeries(filteredReactorsForCharts(), MIN_YEAR, FINAL_YEAR);
+
+  critSvg = d3.select(el).append("svg").attr("width", W).attr("height", H);
+  critSvg.append("text")
+    .attr("x", 10).attr("y", 16)
+    .attr("font-size", 12).attr("font-weight", 650)
+    .text("Criticalities over time");
+
+  critAvgAgeText = critSvg.append("text")
+    .attr("x", W - 10).attr("y", 16)
+    .attr("text-anchor", "end")
+    .attr("font-size", 11).attr("font-weight", 650)
+    .text("Avg operating age: n/a");
+
+  critG = critSvg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+  critX = d3.scaleLinear().domain([MIN_YEAR, FINAL_YEAR]).range([0, iw]);
+  critYLeft  = d3.scaleLinear().domain([0, d3.max(CRIT_SERIES, d => d.cum) || 1]).nice().range([ih, 0]);
+  critYRight = d3.scaleLinear().domain([0, d3.max(CRIT_SERIES, d => d.inc) || 1]).nice().range([ih, 0]);
+
+  critXAxisG  = critG.append("g").attr("transform", `translate(0,${ih})`);
+  critYLeftG  = critG.append("g");
+  critYRightG = critG.append("g").attr("transform", `translate(${iw},0)`);
+
+  critXAxisG.call(d3.axisBottom(critX).ticks(6).tickFormat(d3.format("d")));
+  critYLeftG.call(d3.axisLeft(critYLeft).ticks(5));
+  critYRightG.call(d3.axisRight(critYRight).ticks(5));
+
+  critYRightG.selectAll("text")
+    .attr("fill", "rgba(80,120,255,1)");   // choose your color
+
+  critYRightG.selectAll("line")
+    .attr("stroke", "rgba(80,120,255,1)");
+
+  critYRightG.selectAll("path")
+    .attr("stroke", "rgba(80,120,255,1)");
+  // bars + line layers
+  critBarsG = critG.append("g");
+  critLinePath = critG.append("path")
+    .attr("fill", "none")
+    .attr("stroke", "#111")           // IMPORTANT: otherwise invisible
+    .attr("stroke-opacity", 0.85)
+    .attr("stroke-width", 2);
+
+  // vertical year line
+  critG.append("line")
+    .attr("id", "crit-year-line")
+    .attr("y1", 0).attr("y2", ih)
+    .attr("stroke", "rgba(0,0,0,0.45)")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+
+  // legend (top-left, under title)
+  const leg = critSvg.append("g")
+    .attr("transform", "translate(14,32)");
+
+  leg.append("rect")
+    .attr("x", 0).attr("y", -23)
+    .attr("width", 10).attr("height", 10)
+    .attr("fill", "rgba(80,120,255,0.55)");
+
+  leg.append("text")
+    .attr("x", 14).attr("y", -15)
+    .attr("font-size", 11)
+    .text("New criticalities / year");
+
+  leg.append("line")
+    .attr("x1", 190).attr("x2", 205)
+    .attr("y1", -19).attr("y2", -19)
+    .attr("stroke", "#111")
+    .attr("stroke-width", 2);
+
+  leg.append("text")
+    .attr("x", 210).attr("y", -15)
+    .attr("font-size", 11)
+    .text("Cumulative");
+}
+
+function updateCriticalityChartToYear(year) {
+  if (!CRIT_SERIES) return;
+
+  const data = CRIT_SERIES.filter(d => d.year <= year);
+
+  const step = critX(MIN_YEAR + 1) - critX(MIN_YEAR);
+  const bw = Math.max(1, step * 0.85);
+
+  const bars = critBarsG.selectAll("rect").data(data, d => d.year);
+
+  bars.enter().append("rect")
+      .attr("fill", "rgba(80,120,255,0.55)")
+      .attr("x", d => critX(d.year) - bw/2)
+      .attr("width", bw)
+      .attr("y", d => critYRight(d.inc))
+      .attr("height", d => critYRight(0) - critYRight(d.inc))
+    .merge(bars)
+      .attr("x", d => critX(d.year) - bw/2)
+      .attr("width", bw)
+      .attr("y", d => critYRight(d.inc))
+      .attr("height", d => critYRight(0) - critYRight(d.inc));
+
+  bars.exit().remove();
+
+  const line = d3.line()
+    .x(d => critX(d.year))
+    .y(d => critYLeft(d.cum));
+
+  critLinePath.datum(data).attr("d", line);
+
+  critG.select("#crit-year-line")
+    .attr("x1", critX(year))
+    .attr("x2", critX(year));
+
+  updateCriticalityAvgAgeLabel(year);
+}
+
+// ----------------------------
+// Render year (map + chart)
+// ----------------------------
+function renderYear(year, opts = {}) {
+  
+  if (!opts.fromMapEvent) {
+    yearSlider.value = year;
+    yearLabel.textContent = year;
+  }
+  if (!REACTORS || REACTORS.length === 0) return;
+  if (!(GEO instanceof Map) || GEO.size === 0) return;
+
+  // Visible reactors for this year (before filter)
+  // Visible reactors for this year (AFTER filter) — collisions should use only these
+  const filteredVisible = [];
+  for (const r of REACTORS) {
+    if (!passesRegionFilter(r)) continue;
+    const st = reactorStateAtYear(r, year);
+    if (st === "none") continue;
+    if (STATUS_FILTER !== "all" && st !== STATUS_FILTER) continue;
+    filteredVisible.push(r);
+  }
+
+  // Compute global collision positions ONLY from filtered markers
+  const collisionLatLngs = computeGlobalCollisionLatLngs(filteredVisible);
+
+
+
+
+  // Add/update/remove markers
+  for (const r of REACTORS) {
+    const state = reactorStateAtYear(r, year);
+    const marker = MARKERS.get(r.iaea_code);
+
+    // Keep only reactors that are in the collision layout (filtered + visible)
+    if (!passesRegionFilter(r) || state === "none" || (STATUS_FILTER !== "all" && state !== STATUS_FILTER)) {
+      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
+      continue;
+    }
+
+
+    const ll = collisionLatLngs.get(r.iaea_code);
+    if (!ll) {
+      if (marker) { map.removeLayer(marker); MARKERS.delete(r.iaea_code); }
+      continue;
+    }
+
+    const style = markerStyleForState(state);
+    if (!marker) {
+      const m = L.circleMarker(ll, style).bindPopup(makePopup(r, state, year));
+      m.addTo(map);
+      MARKERS.set(r.iaea_code, m);
+    } else {
+      marker.setLatLng(ll);
+      marker.setStyle(style);
+      marker.setPopupContent(makePopup(r, state, year));
+    }
+  }
+  updateStatusCountsChartToYear(year);
+
+  updateCriticalityChartToYear(year);
+}
+
+// ----------------------------
+// Controls
+// ----------------------------
+const playBtn = document.getElementById("playBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const yearSlider = document.getElementById("yearSlider");
+const yearLabel = document.getElementById("yearLabel");
+const dataStatus = document.getElementById("dataStatus");
+
+function setPlaying(isPlaying) {
+  playBtn.disabled = isPlaying;
+  pauseBtn.disabled = !isPlaying;
+}
+
+function startPlay() {
+  if (PLAY_TIMER) return;
+  setPlaying(true);
+  PLAY_TIMER = setInterval(() => {
+    const y = Number(yearSlider.value);
+    const maxY = Number(yearSlider.max);
+    const next = (y >= maxY) ? Number(yearSlider.min) : y + 1;
+    renderYear(next);
+  }, 450);
+}
+
+function stopPlay() {
+  setPlaying(false);
+  if (PLAY_TIMER) clearInterval(PLAY_TIMER);
+  PLAY_TIMER = null;
+}
+
+playBtn.addEventListener("click", startPlay);
+pauseBtn.addEventListener("click", stopPlay);
+yearSlider.addEventListener("input", (e) => {
+  stopPlay();
+  renderYear(Number(e.target.value));
+});
+
+// Legend click filter
+document.querySelectorAll("#legend .legend-item").forEach(item => {
+  item.addEventListener("click", () => {
+    STATUS_FILTER = item.dataset.status;
+
+    document.querySelectorAll("#legend .legend-item").forEach(el => el.classList.remove("active"));
+    item.classList.add("active");
+
+    renderYear(Number(yearSlider.value));
+  });
+});
+
+// ----------------------------
+// Load + boot
+// ----------------------------
+async function loadJson(url) {
+  const resp = await fetch(url, { cache: "no-store" });
+  if (!resp.ok) throw new Error(`Failed to load ${url} (${resp.status})`);
+  return await resp.json();
+}
+
+function computeMinYearFromDates(reactors) {
+  const years = [];
+  for (const r of reactors) {
+    for (const k of ["start_of_construction","first_criticality","tmp_shutdown_date","shutdown_date"]) {
+      const y = parseYearLoose(r[k]);
+      if (y !== null) years.push(y);
+    }
+  }
+  return years.length ? Math.min(...years) : 1950;
+}
+
+(async function boot() {
+  try {
+    dataStatus.textContent = "loading reactors…";
+
+    REACTORS_RAW = await loadJson("reactors_join_search_exl.json");
+    REACTORS_FILLED = await loadJson("reactors_join_search_exl_filled.json");
+
+    // start in non-interpolated mode
+    REACTORS = REACTORS_RAW;
+    dataStatus.textContent = `${REACTORS.length} reactors loaded`;
+    const useInterpolatedEl = document.getElementById("useInterpolated");
+    const interpWarningEl = document.getElementById("interp-warning");
+    const europeOnlyEl = document.getElementById("europeOnly");
+
+    useInterpolatedEl.addEventListener("change", () => {
+      USE_INTERPOLATED = useInterpolatedEl.checked;
+      
+      REACTORS = USE_INTERPOLATED ? REACTORS_FILLED : REACTORS_RAW;
+      interpWarningEl.style.display = USE_INTERPOLATED ? "block" : "none";
+      
+      // recompute derived stuff that depends on REACTORS
+      MIN_YEAR = computeMinYearFromDates(REACTORS);
+      yearSlider.min = String(MIN_YEAR);
+      
+      // keep current year but clamp to new min/max
+      const y = Math.max(MIN_YEAR, Math.min(FINAL_YEAR, Number(yearSlider.value)));
+      yearSlider.value = String(y);
+      yearLabel.textContent = yearSlider.value;
+      
+      initCriticalityChart();
+      initStatusCountsChart();
+      updateStatusCountsChartToYear(Number(yearSlider.value));
+
+      renderYear(Number(yearSlider.value));
+    });
+
+    europeOnlyEl.addEventListener("change", () => {
+      EUROPE_ONLY = europeOnlyEl.checked;
+
+      initCriticalityChart();
+      initStatusCountsChart();
+      renderYear(Number(yearSlider.value));
+    });
+
+
+    MIN_YEAR = computeMinYearFromDates(REACTORS);
+
+    yearSlider.min = String(MIN_YEAR);
+    yearSlider.max = String(FINAL_YEAR);
+    const initial = Math.max(MIN_YEAR, Math.min(FINAL_YEAR, Number(yearSlider.value || 2000)));
+    yearSlider.value = String(initial);
+    yearLabel.textContent = yearSlider.value;
+
+    dataStatus.textContent = "loading geocodes.json…";
+    const geoObj = await loadJson(GEO_URL);
+    GEO = new Map(Object.entries(geoObj));
+    dataStatus.textContent = `ready (geocodes: ${GEO.size})`;
+
+    // init chart AFTER data is loaded
+    initCriticalityChart();
+    initStatusCountsChart();
+    updateStatusCountsChartToYear(Number(yearSlider.value));
+
+    updateCriticalityChartToYear(Number(yearSlider.value));
+
+    // initial render
+    renderYear(Number(yearSlider.value));
+  } catch (e) {
+    console.error(e);
+    dataStatus.textContent = "ERROR (see console)";
+  }
+})();
+</script>
+</body>
+</html>
