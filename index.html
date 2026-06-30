@@ -568,7 +568,7 @@ function updateStatusCountsChartToYear(year) {
 // ----------------------------
 let MIN_YEAR = 1950;
 let CRIT_SERIES = null;
-let critSvg, critG, critX, critYLeft, critYRight, critLinePath, critBarsG, critXAxisG, critYLeftG, critYRightG, critAvgAgeText;
+let critSvg, critG, critX, critYLeft, critYRight, critLinePath, critOperPath, critBarsG, critXAxisG, critYLeftG, critYRightG, critAvgAgeText;
 let critInnerH = 0, critInnerW = 0;
 
 function buildCriticalitySeries(reactors, minYear, maxYear) {
@@ -587,7 +587,11 @@ function buildCriticalitySeries(reactors, minYear, maxYear) {
   for (let y = minYear; y <= maxYear; y++) {
     const inc = yearly.get(y) || 0;
     cum += inc;
-    series.push({ year: y, inc, cum });
+    let oper = 0;
+    for (const r of reactors) {
+      if (reactorStateAtYear(r, y) === "operational") oper++;
+    }
+    series.push({ year: y, inc, cum, oper });
   }
   return series;
 }
@@ -665,6 +669,11 @@ function initCriticalityChart() {
     .attr("stroke-opacity", 0.85)
     .attr("stroke-width", 2);
 
+  critOperPath = critG.append("path")
+    .attr("fill", "none")
+    .attr("stroke", "#1a9850")
+    .attr("stroke-opacity", 0.95)
+    .attr("stroke-width", 2);
   // vertical year line
   critG.append("line")
     .attr("id", "crit-year-line")
@@ -697,6 +706,17 @@ function initCriticalityChart() {
     .attr("x", 210).attr("y", -15)
     .attr("font-size", 11)
     .text("Cumulative");
+
+  leg.append("line")
+    .attr("x1", 0).attr("x2", 15)
+    .attr("y1", -3).attr("y2", -3)
+    .attr("stroke", "#1a9850")
+    .attr("stroke-width", 2);
+
+  leg.append("text")
+    .attr("x", 20).attr("y", 1)
+    .attr("font-size", 11)
+    .text("Operational reactors");
 }
 
 function updateCriticalityChartToYear(year) {
@@ -729,6 +749,12 @@ function updateCriticalityChartToYear(year) {
 
   critLinePath.datum(data).attr("d", line);
 
+  const operLine = d3.line()
+    .x(d => critX(d.year))
+    .y(d => critYLeft(d.oper));
+
+  critOperPath.datum(data).attr("d", operLine);
+  
   critG.select("#crit-year-line")
     .attr("x1", critX(year))
     .attr("x2", critX(year));
